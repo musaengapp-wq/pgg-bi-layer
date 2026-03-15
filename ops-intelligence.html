@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGG Operational Intelligence Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--navy:#1a2744;--navy-light:#243356;--navy-dark:#111b30;
+--gold:#c9a84c;--gold-light:#f5ecd7;--gold-pale:#faf6eb;
+--red:#c0392b;--green:#27ae60;--orange:#e67e22;
+--bg:#f0f2f5;--white:#ffffff;--text:#2c3e50;--text-light:#7f8c8d;
+--shadow:0 2px 12px rgba(26,39,68,0.08);--shadow-hover:0 4px 20px rgba(26,39,68,0.14);
+--radius:10px;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);color:var(--white);padding:28px 32px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,0.2)}
+.header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header-brand{display:flex;align-items:center;gap:16px}
+.header-logo{width:48px;height:48px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--navy);flex-shrink:0}
+.header h1{font-size:1.65rem;font-weight:700;letter-spacing:-0.5px}
+.header h1 span{color:var(--gold)}
+.header-sub{font-size:.85rem;color:rgba(255,255,255,0.6);margin-top:2px}
+.header-meta{text-align:right;font-size:.82rem;color:rgba(255,255,255,0.7)}
+.header-meta strong{color:var(--gold);font-size:.95rem}
+
+/* Nav */
+.nav{background:var(--navy-dark);border-bottom:2px solid var(--gold);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-inner{max-width:1440px;margin:0 auto;display:flex;gap:0;padding:0 16px}
+.nav a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:.78rem;padding:10px 14px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.nav a:hover,.nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* Container */
+.container{max-width:1440px;margin:0 auto;padding:24px 20px 60px}
+
+/* Section */
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:16px 20px;background:var(--white);border-radius:var(--radius) var(--radius) 0 0;border-left:4px solid var(--gold);box-shadow:var(--shadow);user-select:none}
+.section-header h2{font-size:1.15rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px}
+.section-header h2 .icon{font-size:1.2rem}
+.section-toggle{width:28px;height:28px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--navy);transition:transform .3s;flex-shrink:0}
+.section.collapsed .section-toggle{transform:rotate(-90deg)}
+.section-body{background:var(--white);border-radius:0 0 var(--radius) var(--radius);padding:20px;box-shadow:var(--shadow);overflow:hidden;transition:max-height .4s ease,opacity .3s ease,padding .3s ease}
+.section.collapsed .section-body{max-height:0!important;padding-top:0;padding-bottom:0;opacity:0;overflow:hidden}
+
+/* Cards Grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.card{background:var(--gold-pale);border-radius:8px;padding:16px;text-align:center;border:1px solid rgba(201,168,76,0.15)}
+.card-value{font-size:1.8rem;font-weight:800;color:var(--navy);line-height:1.1}
+.card-label{font-size:.78rem;color:var(--text-light);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.card-sub{font-size:.72rem;margin-top:4px;font-weight:600}
+.card-sub.green{color:var(--green)}.card-sub.red{color:var(--red)}.card-sub.orange{color:var(--orange)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:8px;border:1px solid #e8e8e8}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{background:var(--navy);color:var(--white);padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap;font-size:.76rem;text-transform:uppercase;letter-spacing:.4px}
+tbody td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
+tbody tr:hover{background:var(--gold-pale)}
+tbody tr:last-child td{border-bottom:none}
+
+/* Status Badges */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.badge-green{background:#e8f5e9;color:var(--green)}
+.badge-red{background:#fde8e6;color:var(--red)}
+.badge-amber,.badge-orange{background:#fff3e0;color:var(--orange)}
+.badge-critical{background:var(--red);color:#fff;animation:pulse 1.5s infinite}
+
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(192,57,43,0.4)}50%{opacity:.85;box-shadow:0 0 0 8px rgba(192,57,43,0)}}
+
+/* Charts */
+.chart-container{position:relative;margin:16px 0}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+/* Flag row */
+.flag-row{background:#fde8e6!important}
+.flag-amber{background:#fff8e1!important}
+
+/* Metric highlight */
+.metric-neg{color:var(--red);font-weight:700}
+.metric-pos{color:var(--green);font-weight:700}
+
+/* Responsive */
+@media(max-width:900px){
+ .chart-row{grid-template-columns:1fr}
+ .cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+ .header h1{font-size:1.25rem}
+ .header-inner{flex-direction:column;align-items:flex-start}
+ .header-meta{text-align:left}
+}
+@media(max-width:600px){
+ .container{padding:12px 10px 40px}
+ .section-body{padding:14px 12px}
+ .cards{grid-template-columns:1fr 1fr}
+ .nav a{padding:8px 10px;font-size:.72rem}
+}
+
+/* Print */
+@media print{
+ .header{position:static;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .nav{display:none}
+ .section.collapsed .section-body{max-height:none!important;opacity:1;padding:20px}
+ .section.collapsed .section-toggle{transform:none}
+ .section{break-inside:avoid;page-break-inside:avoid}
+ body{background:#fff}
+ .container{padding:0}
+ .section-body,.section-header{box-shadow:none}
+}
+
+/* Scroll offset for nav links */
+.section[id]{scroll-margin-top:110px}
+
+/* Tooltip-style detail */
+.detail-note{font-size:.72rem;color:var(--text-light);margin-top:8px;font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="header">
+ <div class="header-inner">
+  <div class="header-brand">
+   <div class="header-logo">PGG</div>
+   <div>
+    <h1>PGG <span>Business Intelligence</span></h1>
+    <div class="header-sub">Module 3: Operational Intelligence &mdash; Post-Acquisition Monitoring</div>
+   </div>
+  </div>
+  <div class="header-meta">
+   <strong id="currentDate"></strong><br>
+   6 Properties &bull; 29 Active Placements &bull; 42 Staff
+  </div>
+ </div>
+</div>
+
+<div class="nav">
+ <div class="nav-inner">
+  <a href="#staff-overview">Staff Overview</a>
+  <a href="#staff-utilisation">Utilisation</a>
+  <a href="#placements">Placements</a>
+  <a href="#compliance">Compliance</a>
+  <a href="#contact-notes">Contact Notes</a>
+  <a href="#incidents">Incidents</a>
+  <a href="#training">Training</a>
+  <a href="#cost-per-bed">Cost/Bed</a>
+  <a href="#retention">Retention Curve</a>
+ </div>
+</div>
+
+<div class="container">
+
+<!-- ============ 1. STAFF OVERVIEW ============ -->
+<div class="section" id="staff-overview">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#128101;</span> Staff Overview</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="cards">
+   <div class="card">
+    <div class="card-value">42</div>
+    <div class="card-label">Total Headcount</div>
+   </div>
+   <div class="card">
+    <div class="card-value">34</div>
+    <div class="card-label">Permanent Staff</div>
+    <div class="card-sub green">81% of workforce</div>
+   </div>
+   <div class="card">
+    <div class="card-value">8</div>
+    <div class="card-label">Agency Staff</div>
+    <div class="card-sub orange">19% of workforce</div>
+   </div>
+   <div class="card">
+    <div class="card-value">28%</div>
+    <div class="card-label">Staff Turnover (12mo)</div>
+    <div class="card-sub green">&#9660; Below industry avg (30%)</div>
+   </div>
+  </div>
+  <div class="chart-row">
+   <div class="chart-container" style="max-height:320px">
+    <canvas id="staffByPropertyChart"></canvas>
+   </div>
+   <div class="chart-container" style="max-height:320px">
+    <canvas id="agencyTrendChart"></canvas>
+   </div>
+  </div>
+  <p class="detail-note">Agency % trend shows rolling monthly average over last 6 months. Target: &lt;15% agency reliance across portfolio.</p>
+ </div>
+</div>
+
+<!-- ============ 2. STAFF UTILISATION ============ -->
+<div class="section" id="staff-utilisation">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#9201;</span> Staff Utilisation</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Property</th>
+      <th>Contracted Hrs/wk</th>
+      <th>Worked Hrs/wk</th>
+      <th>Agency Hrs/wk</th>
+      <th>Agency %</th>
+      <th>Overtime</th>
+      <th>Status</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="flag-amber">
+      <td><strong>114 Southcote Lane</strong></td>
+      <td>280</td><td>312</td><td>48</td>
+      <td>15.4%</td><td>32</td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+     <tr>
+      <td><strong>146 Southcote Lane</strong></td>
+      <td>252</td><td>268</td><td>36</td>
+      <td>13.4%</td><td>16</td>
+      <td><span class="badge badge-green">OK</span></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>56 Hamilton Road</strong></td>
+      <td>210</td><td>234</td><td>42</td>
+      <td>17.9%</td><td>24</td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>Basingstoke Road</strong></td>
+      <td>168</td><td>196</td><td>52</td>
+      <td>26.5%</td><td>28</td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr>
+      <td><strong>Fairlawn Green</strong></td>
+      <td>168</td><td>178</td><td>24</td>
+      <td>13.5%</td><td>10</td>
+      <td><span class="badge badge-green">OK</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>6 Pentland Close</strong></td>
+      <td>126</td><td>144</td><td>30</td>
+      <td>20.8%</td><td>18</td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr style="background:var(--gold-pale);font-weight:700">
+      <td>Portfolio Total</td>
+      <td>1,204</td><td>1,332</td><td>232</td>
+      <td>17.4%</td><td>128</td>
+      <td></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <p class="detail-note">Thresholds &mdash; Red: Agency &gt;20% | Amber: Agency &gt;15%. Basingstoke Road and Pentland Close require urgent staffing review.</p>
+ </div>
+</div>
+
+<!-- ============ 3. PLACEMENT DASHBOARD ============ -->
+<div class="section" id="placements">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#127968;</span> Placement Dashboard</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="cards">
+   <div class="card">
+    <div class="card-value">29</div>
+    <div class="card-label">Active Placements</div>
+   </div>
+   <div class="card">
+    <div class="card-value">3</div>
+    <div class="card-label">New This Month</div>
+    <div class="card-sub green">&#9650; +1 vs last month</div>
+   </div>
+   <div class="card">
+    <div class="card-value">2</div>
+    <div class="card-label">Ended This Month</div>
+   </div>
+   <div class="card">
+    <div class="card-value">6.9</div>
+    <div class="card-label">Avg Duration (months)</div>
+    <div class="card-sub orange">Below target of 9mo</div>
+   </div>
+  </div>
+  <div class="chart-row">
+   <div class="chart-container" style="max-height:320px">
+    <canvas id="endingReasonsChart"></canvas>
+   </div>
+   <div style="display:flex;flex-direction:column;justify-content:center;gap:8px;padding:16px">
+    <h3 style="color:var(--navy);font-size:.95rem;margin-bottom:8px">Ending Reasons Breakdown</h3>
+    <div style="font-size:.82rem;display:flex;flex-direction:column;gap:6px">
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#27ae60;margin-right:8px;vertical-align:middle"></span>Independent Living: 35%</div>
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#c0392b;margin-right:8px;vertical-align:middle"></span>Placement Breakdown: 22%</div>
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e67e22;margin-right:8px;vertical-align:middle"></span>Different Provider: 18%</div>
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2980b9;margin-right:8px;vertical-align:middle"></span>Returned to Family: 12%</div>
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#8e44ad;margin-right:8px;vertical-align:middle"></span>Aged Out of Service: 8%</div>
+     <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#95a5a6;margin-right:8px;vertical-align:middle"></span>Other: 5%</div>
+    </div>
+    <p class="detail-note" style="margin-top:12px">22% placement breakdown rate is a significant concern. Industry benchmark is 12&ndash;15%.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- ============ 4. COMPLIANCE SCORE ============ -->
+<div class="section" id="compliance">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#9989;</span> Compliance Score</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Property</th>
+      <th>Contact Notes</th>
+      <th>Incidents</th>
+      <th>Training</th>
+      <th>Support Plans</th>
+      <th>Overall</th>
+      <th>Rating</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td><strong>114 Southcote Lane</strong></td>
+      <td>92</td><td>88</td><td>85</td><td>90</td>
+      <td><strong>89%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>146 Southcote Lane</strong></td>
+      <td>85</td><td>82</td><td>78</td><td>84</td>
+      <td><strong>82%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>56 Hamilton Road</strong></td>
+      <td>78</td><td>75</td><td>72</td><td>80</td>
+      <td><strong>76%</strong></td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>Basingstoke Road</strong></td>
+      <td>65</td><td>60</td><td>58</td><td>68</td>
+      <td><strong>63%</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr>
+      <td><strong>Fairlawn Green</strong></td>
+      <td>88</td><td>90</td><td>82</td><td>86</td>
+      <td><strong>87%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>6 Pentland Close</strong></td>
+      <td>70</td><td>72</td><td>65</td><td>74</td>
+      <td><strong>70%</strong></td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="chart-row">
+   <div class="chart-container" style="max-height:340px">
+    <canvas id="complianceRadarChart"></canvas>
+   </div>
+   <div class="chart-container" style="max-height:340px">
+    <canvas id="complianceBarChart"></canvas>
+   </div>
+  </div>
+  <p class="detail-note">Compliance score thresholds &mdash; Green: &ge;80% | Amber: 65&ndash;79% | Red: &lt;65%. Basingstoke Road requires immediate improvement plan.</p>
+ </div>
+</div>
+
+<!-- ============ 5. CONTACT NOTES MONITOR ============ -->
+<div class="section" id="contact-notes">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#128221;</span> Contact Notes Monitor</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="cards">
+   <div class="card">
+    <div class="card-value">847</div>
+    <div class="card-label">Total Notes This Month</div>
+   </div>
+   <div class="card">
+    <div class="card-value">29.2</div>
+    <div class="card-label">Avg Per Service User</div>
+    <div class="card-sub green">Target: 28+</div>
+   </div>
+   <div class="card" style="border:2px solid var(--red)">
+    <div class="card-value" style="color:var(--red)">3</div>
+    <div class="card-label">No Contact 7+ Days</div>
+    <div class="card-sub red">Requires immediate action</div>
+   </div>
+   <div class="card" style="border:2px solid var(--red);background:#fde8e6">
+    <div class="card-value" style="color:var(--red)">1</div>
+    <div class="card-label">Safeguarding Trigger</div>
+    <div class="card-sub red" style="animation:pulse 1.5s infinite">14+ DAYS NO CONTACT</div>
+   </div>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Service User</th>
+      <th>Property</th>
+      <th>Last Contact</th>
+      <th>Days Since</th>
+      <th>Status</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="flag-row">
+      <td><strong>SU-027</strong></td>
+      <td>Basingstoke Road</td>
+      <td>1 Mar 2026</td>
+      <td><strong>14 days</strong></td>
+      <td><span class="badge badge-critical">Safeguarding</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>SU-011</strong></td>
+      <td>56 Hamilton Road</td>
+      <td>3 Mar 2026</td>
+      <td><strong>12 days</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>SU-024</strong></td>
+      <td>6 Pentland Close</td>
+      <td>5 Mar 2026</td>
+      <td><strong>10 days</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>SU-019</strong></td>
+      <td>Basingstoke Road</td>
+      <td>7 Mar 2026</td>
+      <td><strong>8 days</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <p class="detail-note">SU-027 has triggered the safeguarding protocol &mdash; 14 days without any confirmed contact. Escalated to Registered Manager and local authority notified. All Red-flagged service users require contact within 24 hours.</p>
+ </div>
+</div>
+
+<!-- ============ 6. INCIDENT TRACKER ============ -->
+<div class="section" id="incidents">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#9888;</span> Incident Tracker</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="cards">
+   <div class="card" style="border:2px solid var(--red)">
+    <div class="card-value" style="color:var(--red)">7</div>
+    <div class="card-label">Open Incidents</div>
+   </div>
+   <div class="card">
+    <div class="card-value">4.2</div>
+    <div class="card-label">Avg Resolution (days)</div>
+    <div class="card-sub orange">Target: &lt;3 days</div>
+   </div>
+   <div class="card">
+    <div class="card-value">12</div>
+    <div class="card-label">Resolved This Month</div>
+    <div class="card-sub green">All within SLA</div>
+   </div>
+   <div class="card">
+    <div class="card-value">1</div>
+    <div class="card-label">Critical Open</div>
+    <div class="card-sub red">Safeguarding &mdash; Basingstoke Rd</div>
+   </div>
+  </div>
+  <div class="chart-row">
+   <div class="chart-container" style="max-height:260px">
+    <canvas id="severityChart"></canvas>
+   </div>
+   <div></div>
+  </div>
+  <h3 style="font-size:.9rem;color:var(--navy);margin:16px 0 8px">Open Incidents</h3>
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>ID</th>
+      <th>Property</th>
+      <th>Type</th>
+      <th>Severity</th>
+      <th>Opened</th>
+      <th>Days Open</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="flag-row">
+      <td><strong>INC-089</strong></td>
+      <td>Basingstoke Road</td>
+      <td>Safeguarding</td>
+      <td><span class="badge badge-critical">Critical</span></td>
+      <td>12 Mar 2026</td>
+      <td><strong>3</strong></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>INC-087</strong></td>
+      <td>56 Hamilton Road</td>
+      <td>Property Damage</td>
+      <td><span class="badge badge-red">High</span></td>
+      <td>10 Mar 2026</td>
+      <td><strong>5</strong></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>INC-086</strong></td>
+      <td>114 Southcote Lane</td>
+      <td>Missing Person</td>
+      <td><span class="badge badge-red">High</span></td>
+      <td>9 Mar 2026</td>
+      <td><strong>6</strong></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>INC-085</strong></td>
+      <td>6 Pentland Close</td>
+      <td>Staff Conduct</td>
+      <td><span class="badge badge-red">High</span></td>
+      <td>8 Mar 2026</td>
+      <td><strong>7</strong></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>INC-084</strong></td>
+      <td>146 Southcote Lane</td>
+      <td>Medication Error</td>
+      <td><span class="badge badge-orange">Medium</span></td>
+      <td>11 Mar 2026</td>
+      <td><strong>4</strong></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>INC-083</strong></td>
+      <td>Basingstoke Road</td>
+      <td>Verbal Altercation</td>
+      <td><span class="badge badge-orange">Medium</span></td>
+      <td>7 Mar 2026</td>
+      <td><strong>8</strong></td>
+     </tr>
+     <tr>
+      <td><strong>INC-082</strong></td>
+      <td>Fairlawn Green</td>
+      <td>Property Damage</td>
+      <td><span class="badge badge-green">Low</span></td>
+      <td>6 Mar 2026</td>
+      <td><strong>9</strong></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <p class="detail-note">INC-089 (Critical Safeguarding) is under active investigation. INC-085 (Staff Conduct) has exceeded 7-day resolution target &mdash; escalated to HR.</p>
+ </div>
+</div>
+
+<!-- ============ 7. TRAINING MATRIX ============ -->
+<div class="section" id="training">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#127891;</span> Training Matrix</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+   <div class="card">
+    <div class="card-value">78%</div>
+    <div class="card-label">Overall Completion</div>
+    <div class="card-sub orange">Target: 90%</div>
+   </div>
+   <div class="card">
+    <div class="card-value">66</div>
+    <div class="card-label">Overdue Modules</div>
+    <div class="card-sub red">Across all staff</div>
+   </div>
+   <div class="card">
+    <div class="card-value">2</div>
+    <div class="card-label">Modules Below 70%</div>
+    <div class="card-sub red">Mental Health &amp; De-escalation</div>
+   </div>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Training Module</th>
+      <th>Required</th>
+      <th>Completed</th>
+      <th>Overdue</th>
+      <th>% Complete</th>
+      <th>Status</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td><strong>Safeguarding Level 1</strong></td>
+      <td>42</td><td>40</td><td>2</td>
+      <td><strong>95%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>First Aid</strong></td>
+      <td>42</td><td>38</td><td>4</td>
+      <td><strong>90%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>Fire Safety</strong></td>
+      <td>42</td><td>36</td><td>6</td>
+      <td><strong>86%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr>
+      <td><strong>GDPR / Data Protection</strong></td>
+      <td>42</td><td>34</td><td>8</td>
+      <td><strong>81%</strong></td>
+      <td><span class="badge badge-green">Green</span></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>Medication Administration</strong></td>
+      <td>28</td><td>22</td><td>6</td>
+      <td><strong>79%</strong></td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+     <tr class="flag-amber">
+      <td><strong>Manual Handling</strong></td>
+      <td>42</td><td>32</td><td>10</td>
+      <td><strong>76%</strong></td>
+      <td><span class="badge badge-orange">Amber</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>Mental Health Awareness</strong></td>
+      <td>42</td><td>28</td><td>14</td>
+      <td><strong>67%</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>De-escalation Techniques</strong></td>
+      <td>42</td><td>26</td><td>16</td>
+      <td><strong>62%</strong></td>
+      <td><span class="badge badge-red">Red</span></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="chart-container" style="max-height:320px">
+   <canvas id="trainingChart"></canvas>
+  </div>
+  <p class="detail-note">Mental Health Awareness and De-escalation are critically behind. Recommend block-booking training sessions for April to bring both above 85%.</p>
+ </div>
+</div>
+
+<!-- ============ 8. COST PER OCCUPIED BED ============ -->
+<div class="section" id="cost-per-bed">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#128176;</span> Cost per Occupied Bed &mdash; Weekly</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Property</th>
+      <th>Beds</th>
+      <th>Occupied</th>
+      <th>Staff &pound;</th>
+      <th>Rent &pound;</th>
+      <th>Utils &pound;</th>
+      <th>Other &pound;</th>
+      <th>Total &pound;/bed</th>
+      <th>Revenue &pound;/bed</th>
+      <th>Margin</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td><strong>114 Southcote Lane</strong></td>
+      <td>6</td><td>5</td>
+      <td>&pound;840</td><td>&pound;112</td><td>&pound;28</td><td>&pound;76</td>
+      <td><strong>&pound;1,056</strong></td>
+      <td>&pound;1,140</td>
+      <td class="metric-pos">+&pound;84</td>
+     </tr>
+     <tr>
+      <td><strong>146 Southcote Lane</strong></td>
+      <td>6</td><td>5</td>
+      <td>&pound;740</td><td>&pound;104</td><td>&pound;26</td><td>&pound;64</td>
+      <td><strong>&pound;934</strong></td>
+      <td>&pound;968</td>
+      <td class="metric-pos">+&pound;34</td>
+     </tr>
+     <tr>
+      <td><strong>56 Hamilton Road</strong></td>
+      <td>5</td><td>4</td>
+      <td>&pound;860</td><td>&pound;120</td><td>&pound;30</td><td>&pound;75</td>
+      <td><strong>&pound;1,085</strong></td>
+      <td>&pound;1,140</td>
+      <td class="metric-pos">+&pound;55</td>
+     </tr>
+     <tr class="flag-row">
+      <td><strong>Basingstoke Road</strong></td>
+      <td>4</td><td>3</td>
+      <td>&pound;1,053</td><td>&pound;180</td><td>&pound;38</td><td>&pound;93</td>
+      <td><strong>&pound;1,364</strong></td>
+      <td>&pound;1,307</td>
+      <td class="metric-neg">&minus;&pound;57</td>
+     </tr>
+     <tr>
+      <td><strong>Fairlawn Green</strong></td>
+      <td>4</td><td>4</td>
+      <td>&pound;675</td><td>&pound;130</td><td>&pound;24</td><td>&pound;60</td>
+      <td><strong>&pound;889</strong></td>
+      <td>&pound;920</td>
+      <td class="metric-pos">+&pound;31</td>
+     </tr>
+     <tr>
+      <td><strong>6 Pentland Close</strong></td>
+      <td>3</td><td>2</td>
+      <td>&pound;929</td><td>&pound;245</td><td>&pound;35</td><td>&pound;113</td>
+      <td><strong>&pound;1,322</strong></td>
+      <td>&pound;1,330</td>
+      <td class="metric-pos">+&pound;8</td>
+     </tr>
+     <tr style="background:var(--gold-pale);font-weight:700">
+      <td>Portfolio Weighted Avg</td>
+      <td>28</td><td>23</td>
+      <td colspan="4"></td>
+      <td>&pound;1,064</td>
+      <td>&pound;1,098</td>
+      <td class="metric-pos">+&pound;34</td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <div class="chart-container" style="max-height:320px">
+   <canvas id="costRevenueChart"></canvas>
+  </div>
+  <p class="detail-note"><strong>Basingstoke Road is operating at a loss</strong> (&minus;&pound;57/bed/week). Primary drivers: 26.5% agency staffing and only 75% occupancy. Filling the 4th bed would reduce cost/bed to &pound;1,023 and restore margin. Pentland Close is marginal at +&pound;8 &mdash; any void period will tip it negative.</p>
+ </div>
+</div>
+
+<!-- ============ 9. PLACEMENT RETENTION CURVE ============ -->
+<div class="section" id="retention">
+ <div class="section-header" onclick="toggleSection(this)">
+  <h2><span class="icon">&#128200;</span> Placement Retention Curve</h2>
+  <div class="section-toggle">&#9660;</div>
+ </div>
+ <div class="section-body">
+  <div class="chart-container" style="max-height:400px">
+   <canvas id="retentionChart"></canvas>
+  </div>
+  <div class="cards" style="margin-top:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+   <div class="card" style="border:2px solid var(--red)">
+    <div class="card-value" style="color:var(--red)">38%</div>
+    <div class="card-label">Lost by 3 Months</div>
+    <div class="card-sub red">Industry avg: 15%</div>
+   </div>
+   <div class="card" style="border:2px solid var(--red)">
+    <div class="card-value" style="color:var(--red)">55%</div>
+    <div class="card-label">Lost by 6 Months</div>
+    <div class="card-sub red">Industry avg: 28%</div>
+   </div>
+   <div class="card" style="border:2px solid var(--red)">
+    <div class="card-value" style="color:var(--red)">70%</div>
+    <div class="card-label">Lost by 12 Months</div>
+    <div class="card-sub red">Industry avg: 45%</div>
+   </div>
+  </div>
+  <p class="detail-note"><strong>Cedar Hope loses placements at nearly double the industry rate.</strong> The steepest drop occurs in the first 3 months, suggesting inadequate matching, insufficient settling-in support, or poor initial care planning. This is the single biggest revenue risk across the portfolio and the primary area where PGG operational support can deliver measurable ROI.</p>
+ </div>
+</div>
+
+</div><!-- /container -->
+
+<footer style="background:var(--navy);color:rgba(255,255,255,0.5);text-align:center;padding:20px;font-size:.75rem">
+ PGG Business Intelligence &mdash; Operational Intelligence Module &mdash; Confidential<br>
+ Generated <span id="footerDate"></span> &bull; Data refreshed weekly
+</footer>
+
+<script>
+// -- Date --
+const now = new Date();
+const opts = {weekday:'long',year:'numeric',month:'long',day:'numeric'};
+document.getElementById('currentDate').textContent = now.toLocaleDateString('en-GB',opts);
+document.getElementById('footerDate').textContent = now.toLocaleDateString('en-GB',opts);
+
+// -- Toggle sections --
+function toggleSection(header){
+ header.parentElement.classList.toggle('collapsed');
+}
+
+// -- Active nav highlighting --
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{
+ let cur='';
+ sections.forEach(s=>{if(window.scrollY>=s.offsetTop-150)cur=s.id});
+ navLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)});
+});
+
+// -- Chart defaults --
+Chart.defaults.font.family = "'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+const navy='#1a2744',gold='#c9a84c',red='#c0392b',green='#27ae60',orange='#e67e22';
+
+// ===== 1. Staff by Property =====
+new Chart(document.getElementById('staffByPropertyChart'),{
+ type:'bar',
+ data:{
+  labels:['114 Southcote','146 Southcote','Hamilton Rd','Basingstoke Rd','Fairlawn Green','Pentland Close'],
+  datasets:[
+   {label:'Permanent',data:[8,7,6,5,5,3],backgroundColor:navy,borderRadius:4},
+   {label:'Agency',data:[2,1,2,3,1,1],backgroundColor:gold,borderRadius:4}
+  ]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{title:{display:true,text:'Headcount by Property',font:{size:14,weight:'bold'},color:navy}},
+  scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,title:{display:true,text:'Staff'}}}
+ }
+});
+
+// ===== Agency % Trend =====
+new Chart(document.getElementById('agencyTrendChart'),{
+ type:'line',
+ data:{
+  labels:['Oct','Nov','Dec','Jan','Feb','Mar'],
+  datasets:[{
+   label:'Agency %',
+   data:[14,16,18,21,20,19],
+   borderColor:orange,backgroundColor:'rgba(230,126,34,0.1)',
+   fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:orange
+  },{
+   label:'Target (15%)',
+   data:[15,15,15,15,15,15],
+   borderColor:green,borderDash:[6,4],pointRadius:0,fill:false
+  }]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{title:{display:true,text:'Agency % Trend (6 Months)',font:{size:14,weight:'bold'},color:navy}},
+  scales:{y:{beginAtZero:true,max:30,ticks:{callback:v=>v+'%'}}}
+ }
+});
+
+// ===== 3. Ending Reasons Pie =====
+new Chart(document.getElementById('endingReasonsChart'),{
+ type:'doughnut',
+ data:{
+  labels:['Independent Living','Placement Breakdown','Different Provider','Returned to Family','Aged Out','Other'],
+  datasets:[{
+   data:[35,22,18,12,8,5],
+   backgroundColor:[green,red,orange,'#2980b9','#8e44ad','#95a5a6'],
+   borderWidth:2,borderColor:'#fff'
+  }]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{
+   title:{display:true,text:'Placement Ending Reasons',font:{size:14,weight:'bold'},color:navy},
+   legend:{display:false}
+  }
+ }
+});
+
+// ===== 4. Compliance Radar =====
+new Chart(document.getElementById('complianceRadarChart'),{
+ type:'radar',
+ data:{
+  labels:['Contact Notes','Incidents','Training','Support Plans'],
+  datasets:[
+   {label:'114 Southcote',data:[92,88,85,90],borderColor:green,backgroundColor:'rgba(39,174,96,0.08)',pointRadius:3},
+   {label:'Basingstoke Rd',data:[65,60,58,68],borderColor:red,backgroundColor:'rgba(192,57,43,0.08)',pointRadius:3},
+   {label:'Fairlawn Green',data:[88,90,82,86],borderColor:'#2980b9',backgroundColor:'rgba(41,128,185,0.08)',pointRadius:3}
+  ]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{title:{display:true,text:'Compliance Comparison (Selected)',font:{size:14,weight:'bold'},color:navy}},
+  scales:{r:{min:40,max:100,ticks:{stepSize:10}}}
+ }
+});
+
+// ===== Compliance Bar =====
+new Chart(document.getElementById('complianceBarChart'),{
+ type:'bar',
+ data:{
+  labels:['114 Southcote','146 Southcote','Hamilton Rd','Basingstoke Rd','Fairlawn Green','Pentland Close'],
+  datasets:[{
+   label:'Overall Compliance %',
+   data:[89,82,76,63,87,70],
+   backgroundColor:[ green,green,orange,red,green,orange],
+   borderRadius:4
+  }]
+ },
+ options:{
+  indexAxis:'horizontal',responsive:true,maintainAspectRatio:false,
+  plugins:{
+   title:{display:true,text:'Overall Compliance by Property',font:{size:14,weight:'bold'},color:navy},
+   legend:{display:false}
+  },
+  scales:{
+   y:{grid:{display:false}},
+   x:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.05)'}}
+  }
+ }
+});
+
+// ===== 6. Severity Breakdown =====
+new Chart(document.getElementById('severityChart'),{
+ type:'bar',
+ data:{
+  labels:['Critical','High','Medium','Low'],
+  datasets:[{
+   label:'Incidents',
+   data:[1,3,6,9],
+   backgroundColor:[red,'#e74c3c',orange,'#95a5a6'],
+   borderRadius:4
+  }]
+ },
+ options:{
+  indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{
+   title:{display:true,text:'Incidents by Severity (All This Month)',font:{size:14,weight:'bold'},color:navy},
+   legend:{display:false}
+  },
+  scales:{x:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'}},y:{grid:{display:false}}}
+ }
+});
+
+// ===== 7. Training Completion =====
+new Chart(document.getElementById('trainingChart'),{
+ type:'bar',
+ data:{
+  labels:['Safeguarding L1','First Aid','Fire Safety','GDPR','Medication','Manual Handling','Mental Health','De-escalation'],
+  datasets:[
+   {label:'Completed',data:[40,38,36,34,22,32,28,26],backgroundColor:green,borderRadius:4},
+   {label:'Overdue',data:[2,4,6,8,6,10,14,16],backgroundColor:red,borderRadius:4}
+  ]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{title:{display:true,text:'Training Completion by Module',font:{size:14,weight:'bold'},color:navy}},
+  scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,title:{display:true,text:'Staff'}}}
+ }
+});
+
+// ===== 8. Cost vs Revenue =====
+new Chart(document.getElementById('costRevenueChart'),{
+ type:'bar',
+ data:{
+  labels:['114 Southcote','146 Southcote','Hamilton Rd','Basingstoke Rd','Fairlawn Green','Pentland Close'],
+  datasets:[
+   {label:'Cost/Bed/Week',data:[1056,934,1085,1364,889,1322],backgroundColor:navy,borderRadius:4},
+   {label:'Revenue/Bed/Week',data:[1140,968,1140,1307,920,1330],backgroundColor:gold,borderRadius:4}
+  ]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{
+   title:{display:true,text:'Cost vs Revenue per Occupied Bed (Weekly)',font:{size:14,weight:'bold'},color:navy},
+   tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': \u00A3'+ctx.raw.toLocaleString()}}
+  },
+  scales:{
+   x:{grid:{display:false}},
+   y:{beginAtZero:true,ticks:{callback:v=>'\u00A3'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'}}
+  }
+ }
+});
+
+// ===== 9. Retention Curve =====
+new Chart(document.getElementById('retentionChart'),{
+ type:'line',
+ data:{
+  labels:['0','3','6','9','12','15','18','21','24'],
+  datasets:[
+   {
+    label:'Cedar Hope (Actual)',
+    data:[100,62,45,36,30,25,20,15,12],
+    borderColor:red,backgroundColor:'rgba(192,57,43,0.1)',
+    fill:true,tension:0.35,pointRadius:5,pointBackgroundColor:red,borderWidth:3
+   },
+   {
+    label:'Industry Benchmark',
+    data:[100,85,72,63,55,48,42,38,35],
+    borderColor:green,backgroundColor:'rgba(39,174,96,0.06)',
+    fill:true,tension:0.35,pointRadius:5,pointBackgroundColor:green,borderWidth:2,borderDash:[6,4]
+   }
+  ]
+ },
+ options:{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{
+   title:{display:true,text:'Placement Retention Curve: Cedar Hope vs Industry',font:{size:15,weight:'bold'},color:navy},
+   tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.raw+'% retained'}}
+  },
+  scales:{
+   x:{title:{display:true,text:'Months Since Placement',font:{weight:'bold'}},grid:{color:'rgba(0,0,0,0.05)'}},
+   y:{beginAtZero:true,max:100,title:{display:true,text:'% Placements Active',font:{weight:'bold'}},ticks:{callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.05)'}}
+  }
+ }
+});
+</script>
+</body>
+</html>

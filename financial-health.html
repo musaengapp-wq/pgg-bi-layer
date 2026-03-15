@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGG BI Layer - Financial Health Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1a2744;
+  --navy-light: #243352;
+  --navy-dark: #111b30;
+  --gold: #c9a84c;
+  --gold-light: #f5ecd7;
+  --gold-muted: #d4bd7a;
+  --red: #c0392b;
+  --red-bg: #fdecea;
+  --green: #27ae60;
+  --green-bg: #e8f8f0;
+  --orange: #e67e22;
+  --orange-bg: #fef5e7;
+  --white: #ffffff;
+  --grey-50: #f8f9fa;
+  --grey-100: #f1f3f5;
+  --grey-200: #e9ecef;
+  --grey-300: #dee2e6;
+  --grey-500: #868e96;
+  --grey-700: #495057;
+  --grey-900: #212529;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--grey-100);
+  color: var(--grey-900);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  padding: 1.5rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.header-logo {
+  width: 44px; height: 44px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.header h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header-subtitle {
+  font-size: 0.8rem;
+  color: var(--gold-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+.header-meta {
+  text-align: right;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.65);
+}
+.header-meta strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+.header-entity {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+/* ── Alert Banner ── */
+.alert-banner {
+  background: var(--navy-dark);
+  border-bottom: 2px solid var(--gold);
+  max-width: 100%;
+  overflow: hidden;
+}
+.alert-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 2rem;
+  cursor: pointer;
+  user-select: none;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.alert-toggle:hover { background: rgba(255,255,255,0.03); }
+.alert-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--white);
+  font-weight: 600;
+}
+.alert-count {
+  background: var(--red);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.alert-chevron {
+  color: var(--gold);
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+}
+.alert-banner.open .alert-chevron { transform: rotate(180deg); }
+.alert-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.alert-banner.open .alert-list { max-height: 400px; }
+.alert-list-inner {
+  padding: 0 2rem 1rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0.5rem;
+}
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.85);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid transparent;
+}
+.alert-item.critical { border-left-color: var(--red); }
+.alert-item.warning { border-left-color: var(--orange); }
+.alert-dot {
+  flex-shrink: 0;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+.alert-dot.red { background: var(--red); box-shadow: 0 0 6px rgba(192,57,43,0.5); }
+.alert-dot.amber { background: var(--orange); box-shadow: 0 0 6px rgba(230,126,34,0.5); }
+
+/* ── Main Layout ── */
+.main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+}
+.col-12 { grid-column: span 12; }
+.col-8 { grid-column: span 8; }
+.col-6 { grid-column: span 6; }
+.col-4 { grid-column: span 4; }
+.col-3 { grid-column: span 3; }
+
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease;
+  border: 1px solid var(--grey-200);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-title .icon {
+  font-size: 1.1rem;
+}
+.card-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--orange-bg); color: var(--orange); }
+
+/* ── Stat/KPI Blocks ── */
+.kpi-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.kpi-item {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--grey-50);
+  border: 1px solid var(--grey-200);
+}
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.kpi-value.sm { font-size: 1.15rem; }
+.kpi-label {
+  font-size: 0.72rem;
+  color: var(--grey-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+.kpi-value.positive { color: var(--green); }
+.kpi-value.negative { color: var(--red); }
+.kpi-value.warning { color: var(--orange); }
+
+/* ── Chart containers ── */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+}
+.chart-wrap.bar-chart { height: 280px; }
+.chart-wrap.line-chart { height: 260px; }
+.chart-wrap.doughnut-chart { height: 260px; max-width: 320px; margin: 0 auto; }
+.chart-wrap.gauge-chart { height: 200px; max-width: 240px; margin: 0 auto; }
+
+/* ── Highlight / Metric Cards ── */
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.metric-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.metric-card .mc-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin: 0.35rem 0;
+}
+.metric-card .mc-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+}
+.metric-card .mc-bench {
+  font-size: 0.72rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  opacity: 0.7;
+}
+
+/* ── Cash Position Cards ── */
+.cash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+.cash-card {
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  border: 1px solid var(--grey-200);
+}
+.cash-card.highlight {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+.cash-card.highlight .cash-val { color: var(--gold); }
+.cash-card.highlight .cash-lbl { color: rgba(255,255,255,0.7); }
+.cash-card.warn { border-color: var(--red); background: var(--red-bg); }
+.cash-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+.cash-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--grey-500);
+  margin-top: 2px;
+}
+
+/* ── Tables ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.data-table th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--grey-500);
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid var(--grey-200);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--grey-100);
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: var(--grey-50); }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table .summary-row td {
+  font-weight: 700;
+  border-top: 2px solid var(--grey-300);
+  background: var(--grey-50);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.status-dot.red { background: var(--red); }
+.status-dot.amber { background: var(--orange); }
+.status-dot.green { background: var(--green); }
+
+.profit-pos { color: var(--green); font-weight: 700; }
+.profit-neg { color: var(--red); font-weight: 700; }
+
+/* ── HHI / Explanatory text ── */
+.info-box {
+  background: var(--grey-50);
+  border-left: 3px solid var(--gold);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.78rem;
+  color: var(--grey-700);
+  margin-top: 1rem;
+  line-height: 1.55;
+}
+
+/* ── Payroll Gauge Center Text ── */
+.gauge-center {
+  text-align: center;
+  margin-top: -30px;
+  position: relative;
+  z-index: 2;
+}
+.gauge-center .gc-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--red);
+}
+.gauge-center .gc-label {
+  font-size: 0.72rem;
+  color: var(--grey-500);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.75rem;
+  color: var(--grey-500);
+  border-top: 1px solid var(--grey-200);
+  margin-top: 2rem;
+}
+.footer strong { color: var(--navy); }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .col-8, .col-6, .col-4, .col-3 { grid-column: span 6; }
+}
+@media (max-width: 768px) {
+  .header { padding: 1rem 1.25rem; }
+  .header h1 { font-size: 1.1rem; }
+  .main { padding: 1rem; }
+  .grid { gap: 1rem; }
+  .col-8, .col-6, .col-4, .col-3, .col-12 { grid-column: span 12; }
+  .card { padding: 1.25rem; }
+  .kpi-row { gap: 0.6rem; }
+  .kpi-value { font-size: 1.2rem; }
+  .alert-list-inner { grid-template-columns: 1fr; }
+  .data-table { font-size: 0.75rem; }
+  .data-table th, .data-table td { padding: 0.5rem; }
+  .chart-wrap.bar-chart { height: 220px; }
+  .cash-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .cash-grid { grid-template-columns: 1fr; }
+  .metric-cards { grid-template-columns: 1fr; }
+}
+
+/* ── Print ── */
+@media print {
+  body { background: white; }
+  .header { position: static; background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .alert-banner { display: none; }
+  .main { padding: 0.5rem; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid var(--grey-300); page-break-inside: avoid; }
+  .grid { gap: 0.75rem; }
+  .col-8, .col-6 { grid-column: span 6; }
+  .col-4, .col-3 { grid-column: span 6; }
+  .metric-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cash-card.highlight { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .footer { margin-top: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ HEADER ════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">PGG</div>
+      <div>
+        <h1>Financial Health Dashboard</h1>
+        <div class="header-subtitle">Business Intelligence Layer &middot; Module 1</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="header-entity">Cedar Hope Care Services</div>
+      <div>FY 2024-25 &middot; Updated <strong>15 Mar 2026</strong></div>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════ ALERTS ════════════════════════ -->
+<div class="alert-banner open" id="alertBanner">
+  <div class="alert-toggle" onclick="toggleAlerts()">
+    <div class="alert-toggle-left">
+      <span>Active Alerts</span>
+      <span class="alert-count">5</span>
+    </div>
+    <span class="alert-chevron" id="alertChevron">&#9660;</span>
+  </div>
+  <div class="alert-list" id="alertList">
+    <div class="alert-list-inner">
+      <div class="alert-item critical">
+        <span class="alert-dot red"></span>
+        <span><strong>Payroll ratio exceeds 70%</strong> &mdash; currently 75.2%. Industry safe zone is below 65%.</span>
+      </div>
+      <div class="alert-item critical">
+        <span class="alert-dot red"></span>
+        <span><strong>Single commissioner &gt;40% revenue</strong> &mdash; West Berkshire Council at 48%. High dependency risk.</span>
+      </div>
+      <div class="alert-item critical">
+        <span class="alert-dot red"></span>
+        <span><strong>Cash below 2 months operating costs</strong> &mdash; &pound;17.7k available vs &pound;240k needed for safety buffer.</span>
+      </div>
+      <div class="alert-item warning">
+        <span class="alert-dot amber"></span>
+        <span><strong>Void rate &gt;15% at 2 properties</strong> &mdash; Basingstoke Road (25%) and Pentland Close (33%).</span>
+      </div>
+      <div class="alert-item critical">
+        <span class="alert-dot red"></span>
+        <span><strong>Aged debt &gt;90 days: &pound;35.8k</strong> &mdash; Multiple invoices overdue beyond 90 days across 6 debtors.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ MAIN ════════════════════════ -->
+<main class="main">
+
+<!-- ── Key Metrics Row ── -->
+<div class="metric-cards" style="margin-bottom: 1.25rem;">
+  <div class="metric-card">
+    <div class="mc-label">Revenue / Occupied Bed / Week</div>
+    <div class="mc-value">&pound;1,065</div>
+    <div class="mc-bench">Sector average: &pound;950 - &pound;1,200</div>
+  </div>
+  <div class="metric-card">
+    <div class="mc-label">Staff Cost / Occupied Bed / Week</div>
+    <div class="mc-value">&pound;800</div>
+    <div class="mc-bench">Target: &lt;&pound;700 for healthy margin</div>
+  </div>
+  <div class="metric-card">
+    <div class="mc-label">Avg Placement Duration</div>
+    <div class="mc-value">6.9 mo</div>
+    <div class="mc-bench">Benchmark: 12 - 24 months</div>
+  </div>
+</div>
+
+<div class="grid">
+
+<!-- ════════════════════════ 1. REVENUE OVERVIEW ════════════════════════ -->
+<div class="col-8 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#128200;</span> Revenue Overview</div>
+    <span class="card-badge badge-green">+13.3% YoY</span>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-value">&pound;1.76M</div>
+      <div class="kpi-label">Total Revenue (FY)</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm">&pound;146,667</div>
+      <div class="kpi-label">Monthly Average</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm positive">+13.3%</div>
+      <div class="kpi-label">YoY Growth</div>
+    </div>
+  </div>
+  <div class="chart-wrap bar-chart">
+    <canvas id="revenueChart"></canvas>
+  </div>
+</div>
+
+<!-- ════════════════════════ 2. CLIENT CONCENTRATION ════════════════════════ -->
+<div class="col-4 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#127919;</span> Client Concentration</div>
+    <span class="card-badge badge-red">High Risk</span>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi-item" style="flex:1">
+      <div class="kpi-value negative">2,711</div>
+      <div class="kpi-label">HHI Score</div>
+    </div>
+    <div class="kpi-item" style="flex:1">
+      <div class="kpi-value negative">48%</div>
+      <div class="kpi-label">Top Client</div>
+    </div>
+  </div>
+  <div class="chart-wrap doughnut-chart">
+    <canvas id="concentrationChart"></canvas>
+  </div>
+  <div class="info-box">
+    <strong>HHI (Herfindahl-Hirschman Index)</strong> measures market concentration. Scores above 2,500 indicate high dependency on few clients. Below 1,500 is considered healthy diversification. Cedar Hope's score of 2,711 signals significant revenue concentration risk.
+  </div>
+</div>
+
+<!-- ════════════════════════ 3. PAYROLL RATIO ════════════════════════ -->
+<div class="col-4 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#128176;</span> Payroll Ratio</div>
+    <span class="card-badge badge-red">Above Target</span>
+  </div>
+  <div class="chart-wrap gauge-chart">
+    <canvas id="payrollGauge"></canvas>
+  </div>
+  <div class="gauge-center">
+    <div class="gc-value">75.2%</div>
+    <div class="gc-label">of Revenue</div>
+  </div>
+  <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--grey-500);">
+    <span>Payroll: <strong style="color:var(--navy)">&pound;95,298</strong>/mo</span>
+    <span>Revenue: <strong style="color:var(--navy)">&pound;126,796</strong>/mo</span>
+  </div>
+  <div class="info-box">
+    Industry benchmark for supported living is <strong>60-65%</strong> payroll-to-revenue. At 75.2%, Cedar Hope is significantly above target. Every 1% reduction saves approximately <strong>&pound;1,268/month</strong>.
+  </div>
+</div>
+
+<!-- ════════════════════════ 4. CASH POSITION ════════════════════════ -->
+<div class="col-4 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#128179;</span> Cash Position</div>
+    <span class="card-badge badge-red">Critical</span>
+  </div>
+  <div class="cash-grid">
+    <div class="cash-card warn">
+      <div class="cash-val" style="color:var(--red)">&pound;17,699</div>
+      <div class="cash-lbl">Bank Balance</div>
+    </div>
+    <div class="cash-card">
+      <div class="cash-val">&pound;324,026</div>
+      <div class="cash-lbl">Invoiced Unpaid</div>
+    </div>
+    <div class="cash-card">
+      <div class="cash-val">&pound;147,649</div>
+      <div class="cash-lbl">Factored (Novuna)</div>
+    </div>
+    <div class="cash-card highlight">
+      <div class="cash-val">&pound;194,076</div>
+      <div class="cash-lbl">Net Cash Position</div>
+    </div>
+  </div>
+  <div class="info-box" style="margin-top: 0.75rem;">
+    Net position: Bank (&pound;17,699) + Invoiced (&pound;324,026) - Factored (&pound;147,649) = <strong>&pound;194,076</strong>. However, only &pound;17.7k is liquid cash &mdash; just <strong>4.4 days</strong> of operating costs. Two months' safety buffer requires &pound;240k.
+  </div>
+</div>
+
+<!-- ════════════════════════ 5. MONTHLY PROFIT TREND ════════════════════════ -->
+<div class="col-4 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#128202;</span> Monthly Profit Trend</div>
+    <span class="card-badge badge-amber">Volatile</span>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-value sm">&pound;7,420</div>
+      <div class="kpi-label">Monthly Avg Profit</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm warning">5.7%</div>
+      <div class="kpi-label">Avg Net Margin</div>
+    </div>
+  </div>
+  <div class="chart-wrap line-chart">
+    <canvas id="profitChart"></canvas>
+  </div>
+</div>
+
+<!-- ════════════════════════ 6. AGED DEBTORS ════════════════════════ -->
+<div class="col-6 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#9888;&#65039;</span> Aged Debtors</div>
+    <span class="card-badge badge-red">&pound;35,835 Overdue</span>
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Debtor</th>
+          <th class="num">Amount</th>
+          <th class="num">Age</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Brighter Futures (Reading)</td>
+          <td class="num">&pound;21,263</td>
+          <td class="num">12 months</td>
+          <td><span class="status-dot red"></span>Overdue</td>
+        </tr>
+        <tr>
+          <td>Hampshire CC</td>
+          <td class="num">&pound;7,657</td>
+          <td class="num">11 months</td>
+          <td><span class="status-dot red"></span>Overdue</td>
+        </tr>
+        <tr>
+          <td>West Berkshire Council</td>
+          <td class="num">&pound;3,218</td>
+          <td class="num">11 months</td>
+          <td><span class="status-dot red"></span>Overdue</td>
+        </tr>
+        <tr>
+          <td>Bath &amp; NE Somerset</td>
+          <td class="num">&pound;2,082</td>
+          <td class="num">3+ years</td>
+          <td><span class="status-dot red"></span>Overdue</td>
+        </tr>
+        <tr>
+          <td>Harry James Recruitment</td>
+          <td class="num">&pound;700</td>
+          <td class="num">2+ years</td>
+          <td><span class="status-dot red"></span>Overdue</td>
+        </tr>
+        <tr>
+          <td>Pola Well Care</td>
+          <td class="num">&pound;915</td>
+          <td class="num">11 months</td>
+          <td><span class="status-dot amber"></span>Chasing</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="summary-row">
+          <td><strong>Total Outstanding</strong></td>
+          <td class="num"><strong>&pound;35,835</strong></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ 7. VOID RATE / OCCUPANCY ════════════════════════ -->
+<div class="col-6 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#127968;</span> Occupancy by Property</div>
+    <span class="card-badge badge-amber">2 Below Target</span>
+  </div>
+  <div class="chart-wrap bar-chart">
+    <canvas id="occupancyChart"></canvas>
+  </div>
+</div>
+
+<!-- ════════════════════════ 8. PER-PROPERTY P&L ════════════════════════ -->
+<div class="col-12 card">
+  <div class="card-header">
+    <div class="card-title"><span class="icon">&#128203;</span> Per-Property P&amp;L (Monthly)</div>
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th class="num">Revenue</th>
+          <th class="num">Staff Cost</th>
+          <th class="num">Rent</th>
+          <th class="num">Other</th>
+          <th class="num">Profit</th>
+          <th class="num">Margin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>114 Southcote Lane</td>
+          <td class="num">&pound;28,500</td>
+          <td class="num">&pound;21,000</td>
+          <td class="num">&pound;2,800</td>
+          <td class="num">&pound;1,900</td>
+          <td class="num profit-pos">&pound;2,800</td>
+          <td class="num profit-pos">9.8%</td>
+        </tr>
+        <tr>
+          <td>146 Southcote Lane</td>
+          <td class="num">&pound;24,200</td>
+          <td class="num">&pound;18,500</td>
+          <td class="num">&pound;2,600</td>
+          <td class="num">&pound;1,600</td>
+          <td class="num profit-pos">&pound;1,500</td>
+          <td class="num profit-pos">6.2%</td>
+        </tr>
+        <tr>
+          <td>56 Hamilton Road</td>
+          <td class="num">&pound;22,800</td>
+          <td class="num">&pound;17,200</td>
+          <td class="num">&pound;2,400</td>
+          <td class="num">&pound;1,500</td>
+          <td class="num profit-pos">&pound;1,700</td>
+          <td class="num profit-pos">7.5%</td>
+        </tr>
+        <tr>
+          <td>Basingstoke Road</td>
+          <td class="num">&pound;19,600</td>
+          <td class="num">&pound;15,800</td>
+          <td class="num">&pound;2,700</td>
+          <td class="num">&pound;1,400</td>
+          <td class="num profit-neg">-&pound;300</td>
+          <td class="num profit-neg">-1.5%</td>
+        </tr>
+        <tr>
+          <td>Fairlawn Green</td>
+          <td class="num">&pound;18,400</td>
+          <td class="num">&pound;13,500</td>
+          <td class="num">&pound;2,600</td>
+          <td class="num">&pound;1,200</td>
+          <td class="num profit-pos">&pound;1,100</td>
+          <td class="num profit-pos">6.0%</td>
+        </tr>
+        <tr>
+          <td>6 Pentland Close</td>
+          <td class="num">&pound;13,296</td>
+          <td class="num">&pound;9,298</td>
+          <td class="num">&pound;2,452</td>
+          <td class="num">&pound;1,125</td>
+          <td class="num profit-pos">&pound;421</td>
+          <td class="num profit-pos">3.2%</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="summary-row">
+          <td><strong>Total / Average</strong></td>
+          <td class="num"><strong>&pound;126,796</strong></td>
+          <td class="num"><strong>&pound;95,298</strong></td>
+          <td class="num"><strong>&pound;15,552</strong></td>
+          <td class="num"><strong>&pound;8,725</strong></td>
+          <td class="num" style="color:var(--green)"><strong>&pound;7,221</strong></td>
+          <td class="num" style="color:var(--green)"><strong>5.7%</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<footer class="footer">
+  <strong>PGG Business Intelligence</strong> &middot; Financial Health Dashboard &middot; Cedar Hope Care Services<br>
+  Data sourced from Xero, Novuna &amp; internal records &middot; Generated 15 March 2026<br>
+  <span style="opacity:0.6">Confidential &mdash; for internal management use only</span>
+</footer>
+
+</main>
+
+<!-- ════════════════════════ SCRIPTS ════════════════════════ -->
+<script>
+// ── Helpers ──
+const navy = '#1a2744';
+const gold = '#c9a84c';
+const goldLight = '#f5ecd7';
+const red = '#c0392b';
+const green = '#27ae60';
+const orange = '#e67e22';
+const grey300 = '#dee2e6';
+const grey500 = '#868e96';
+
+function gbp(v) { return '£' + v.toLocaleString('en-GB'); }
+
+// Chart.js defaults
+Chart.defaults.font.family = "'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = navy;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
+Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 6;
+Chart.defaults.plugins.tooltip.displayColors = false;
+
+// ── Alert toggle ──
+function toggleAlerts() {
+  document.getElementById('alertBanner').classList.toggle('open');
+}
+
+// ── 1. Revenue Chart ──
+(function() {
+  const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const data = [125400, 131800, 138200, 147600, 142300, 135900, 148100, 152600, 128700, 144500, 137200, 127700];
+  const avg = data.reduce((a,b) => a+b, 0) / data.length;
+
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Monthly Revenue',
+          data: data,
+          backgroundColor: data.map(v => v >= avg ? gold : '#d4bd7a99'),
+          borderColor: gold,
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false
+        },
+        {
+          label: 'Average',
+          data: Array(12).fill(avg),
+          type: 'line',
+          borderColor: navy,
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          order: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + gbp(ctx.raw) } }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: 100000,
+          ticks: { callback: v => '£' + (v/1000) + 'k', color: grey500 },
+          grid: { color: '#f1f3f5' }
+        },
+        x: { ticks: { color: grey500 }, grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ── 2. Client Concentration Doughnut ──
+(function() {
+  const labels = ['West Berkshire', 'Hampshire CC', 'Brighter Futures', 'Wokingham', 'Oxfordshire CC', 'Bath & NES', 'Other LAs'];
+  const data = [48, 15, 12, 8, 5, 4, 8];
+  const colors = [red, '#2980b9', orange, '#8e44ad', '#16a085', '#2c3e50', grey300];
+
+  new Chart(document.getElementById('concentrationChart'), {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors,
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '%' } }
+      }
+    }
+  });
+})();
+
+// ── 3. Payroll Gauge ──
+(function() {
+  const payroll = 75.2;
+  const remainder = 100 - payroll;
+  new Chart(document.getElementById('payrollGauge'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Payroll', 'Remaining'],
+      datasets: [{
+        data: [payroll, remainder],
+        backgroundColor: [red, '#e9ecef'],
+        borderWidth: 0,
+        hoverOffset: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      rotation: -90,
+      circumference: 180,
+      cutout: '75%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      }
+    },
+    plugins: [{
+      id: 'benchmarkLine',
+      afterDraw(chart) {
+        const { ctx, chartArea } = chart;
+        const meta = chart.getDatasetMeta(0);
+        const arc = meta.data[0];
+        const centerX = arc.x;
+        const centerY = arc.y;
+        const outerR = arc.outerRadius;
+        const innerR = arc.innerRadius;
+        // 65% benchmark angle: -90 + (65/100)*180 = 27 degrees
+        const benchAngle = (-90 + (65 / 100) * 180) * Math.PI / 180;
+        const r1 = innerR - 4;
+        const r2 = outerR + 4;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(centerX + r1 * Math.cos(benchAngle), centerY + r1 * Math.sin(benchAngle));
+        ctx.lineTo(centerX + r2 * Math.cos(benchAngle), centerY + r2 * Math.sin(benchAngle));
+        ctx.strokeStyle = green;
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        // Label
+        const labelR = r2 + 12;
+        ctx.fillStyle = green;
+        ctx.font = 'bold 10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('65%', centerX + labelR * Math.cos(benchAngle), centerY + labelR * Math.sin(benchAngle) + 3);
+        ctx.restore();
+
+        // 70% red zone line
+        const redAngle = (-90 + (70 / 100) * 180) * Math.PI / 180;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(centerX + r1 * Math.cos(redAngle), centerY + r1 * Math.sin(redAngle));
+        ctx.lineTo(centerX + r2 * Math.cos(redAngle), centerY + r2 * Math.sin(redAngle));
+        ctx.strokeStyle = red;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        const redLabelR = r2 + 12;
+        ctx.fillStyle = red;
+        ctx.font = 'bold 10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('70%', centerX + redLabelR * Math.cos(redAngle), centerY + redLabelR * Math.sin(redAngle) + 3);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+
+// ── 5. Monthly Profit Trend ──
+(function() {
+  const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const data = [4200, 8900, 12400, 14800, 9600, 2100, 11300, 15200, -1800, 10400, 3700, -1760];
+  const avg = data.reduce((a,b) => a+b, 0) / data.length;
+
+  new Chart(document.getElementById('profitChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Monthly Profit',
+          data: data,
+          borderColor: navy,
+          backgroundColor: function(context) {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if (!chartArea) return goldLight;
+            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, 'rgba(201,168,76,0.25)');
+            gradient.addColorStop(1, 'rgba(201,168,76,0.02)');
+            return gradient;
+          },
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: data.map(v => v < 0 ? red : navy),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.3
+        },
+        {
+          label: 'Average',
+          data: Array(12).fill(avg),
+          borderColor: gold,
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + gbp(ctx.raw) } }
+      },
+      scales: {
+        y: {
+          ticks: { callback: v => '£' + (v/1000).toFixed(0) + 'k', color: grey500 },
+          grid: { color: '#f1f3f5' }
+        },
+        x: { ticks: { color: grey500 }, grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ── 7. Occupancy Chart ──
+(function() {
+  const properties = ['114 Southcote', '146 Southcote', 'Hamilton Rd', 'Basingstoke Rd', 'Fairlawn Green', 'Pentland Close'];
+  const occupancy = [90, 83, 80, 75, 100, 67];
+  const beds = ['5/6', '5/6', '4/5', '3/4', '4/4', '2/3'];
+  const barColors = occupancy.map(v => v >= 85 ? green : v >= 75 ? orange : red);
+
+  new Chart(document.getElementById('occupancyChart'), {
+    type: 'bar',
+    data: {
+      labels: properties,
+      datasets: [{
+        label: 'Occupancy %',
+        data: occupancy,
+        backgroundColor: barColors,
+        borderRadius: 4,
+        borderSkipped: false,
+        barPercentage: 0.65
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.raw + '% occupied (' + beds[ctx.dataIndex] + ' beds)';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0, max: 100,
+          ticks: { callback: v => v + '%', color: grey500 },
+          grid: { color: '#f1f3f5' }
+        },
+        y: {
+          ticks: { color: grey500, font: { size: 11 } },
+          grid: { display: false }
+        }
+      }
+    },
+    plugins: [{
+      id: 'targetLine',
+      afterDraw(chart) {
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        const x = xScale.getPixelForValue(85);
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.strokeStyle = navy;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+        ctx.fillStyle = navy;
+        ctx.font = 'bold 10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('85% target', x, yScale.top - 6);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGG Acquisition Analysis Engine — Cedar Hope Care Services</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ========== RESET & BASE ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--navy-light:#243352;--navy-dark:#111b30;
+  --gold:#c9a84c;--gold-light:#f5ecd7;--gold-dark:#a68a3a;
+  --red:#c0392b;--green:#27ae60;--orange:#e67e22;
+  --bg:#f4f5f7;--card:#fff;--text:#2c3e50;--text-light:#7f8c8d;
+  --shadow:0 2px 12px rgba(26,39,68,.08);
+  --shadow-lg:0 4px 24px rgba(26,39,68,.12);
+  --radius:10px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--gold-dark);text-decoration:none}
+
+/* ========== HEADER ========== */
+.header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);color:#fff;padding:2rem 1.5rem 1.2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.brand{display:flex;align-items:center;gap:1rem}
+.brand-logo{width:48px;height:48px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:var(--navy);flex-shrink:0}
+.brand h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.brand h1 span{color:var(--gold)}
+.brand-sub{font-size:.82rem;color:rgba(255,255,255,.6);margin-top:2px}
+.header-meta{text-align:right;font-size:.8rem;color:rgba(255,255,255,.55)}
+.header-meta strong{color:var(--gold)}
+
+/* ========== NAV ========== */
+.nav{background:var(--navy-dark);border-bottom:2px solid var(--gold);overflow-x:auto;position:sticky;top:0;z-index:99}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;gap:0;padding:0 .5rem}
+.nav a{padding:.7rem 1rem;color:rgba(255,255,255,.7);font-size:.78rem;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.nav a:hover,.nav a.active{color:#fff;border-bottom-color:var(--gold)}
+
+/* ========== LAYOUT ========== */
+.container{max-width:1200px;margin:0 auto;padding:1.5rem}
+.section{margin-bottom:2rem;scroll-margin-top:90px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;border:1px solid rgba(0,0,0,.04)}
+.card-danger{border-left:4px solid var(--red)}
+.card-warning{border-left:4px solid var(--orange)}
+.card-success{border-left:4px solid var(--green)}
+.section-title{font-size:1.25rem;font-weight:700;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.section-title .num{background:var(--navy);color:var(--gold);width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
+.section-subtitle{font-size:.85rem;color:var(--text-light);margin-bottom:1.2rem}
+
+/* ========== BADGES / PILLS ========== */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.badge-red{background:rgba(192,57,43,.1);color:var(--red)}
+.badge-green{background:rgba(39,174,96,.1);color:var(--green)}
+.badge-amber{background:rgba(230,126,34,.1);color:var(--orange)}
+.badge-navy{background:rgba(26,39,68,.1);color:var(--navy)}
+
+/* ========== DEAL SUMMARY GRID ========== */
+.deal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.deal-item{background:var(--gold-light);border-radius:8px;padding:1rem;border:1px solid rgba(201,168,76,.2)}
+.deal-item label{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-light);font-weight:600;display:block;margin-bottom:4px}
+.deal-item .value{font-size:1.1rem;font-weight:700;color:var(--navy)}
+.deal-item .value.price{color:var(--red);font-size:1.3rem}
+
+/* ========== TABLES ========== */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{background:var(--navy);color:#fff;padding:.6rem .8rem;text-align:left;font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+td{padding:.6rem .8rem;border-bottom:1px solid #eee;white-space:nowrap}
+tr:hover td{background:rgba(201,168,76,.04)}
+.text-right{text-align:right}
+.text-center{text-align:center}
+.row-total{background:var(--gold-light);font-weight:700}
+.row-total td{border-bottom:2px solid var(--gold)}
+
+/* ========== RED FLAG BOX ========== */
+.red-flag{background:linear-gradient(135deg,#fdf2f2,#fff5f5);border:2px solid var(--red);border-radius:var(--radius);padding:1.5rem;margin:1rem 0}
+.red-flag-title{font-size:1rem;font-weight:800;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.red-flag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.rf-stat{text-align:center;padding:.8rem}
+.rf-stat .rf-val{font-size:1.6rem;font-weight:800;color:var(--red)}
+.rf-stat .rf-label{font-size:.75rem;color:var(--text-light);margin-top:2px}
+
+/* ========== CHARTS ========== */
+.chart-container{position:relative;max-width:100%;margin:1rem 0}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+
+/* ========== HHI GAUGE ========== */
+.hhi-gauge{display:flex;align-items:center;gap:1.5rem;margin:1rem 0;flex-wrap:wrap}
+.hhi-bar{flex:1;min-width:200px;height:20px;border-radius:10px;background:linear-gradient(90deg,var(--green) 0%,var(--green) 33%,var(--orange) 33%,var(--orange) 66%,var(--red) 66%,var(--red) 100%);position:relative}
+.hhi-marker{position:absolute;top:-6px;width:4px;height:32px;background:var(--navy);border-radius:2px;transform:translateX(-50%)}
+.hhi-score{font-size:1.8rem;font-weight:800;color:var(--red)}
+.hhi-labels{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-light);margin-top:4px}
+
+/* ========== BALANCE SHEET ========== */
+.bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.bs-col h4{font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:2px solid var(--gold)}
+.bs-row{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem;border-bottom:1px solid #f0f0f0}
+.bs-row.total{font-weight:700;border-top:2px solid var(--navy);border-bottom:none;padding-top:.6rem;margin-top:.3rem}
+.bs-row .bs-val{font-weight:600}
+.cash-warning{background:linear-gradient(135deg,#fff8e1,#fffde7);border:1px solid var(--orange);border-radius:8px;padding:1rem;margin-top:1rem;font-size:.85rem;display:flex;align-items:start;gap:.8rem}
+.cash-warning .warn-icon{font-size:1.5rem;flex-shrink:0}
+
+/* ========== RISK MATRIX ========== */
+.risk-row{display:flex;align-items:center;gap:.8rem;padding:.7rem .8rem;border-bottom:1px solid #f0f0f0;font-size:.85rem}
+.risk-row:hover{background:rgba(0,0,0,.015)}
+.risk-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.risk-dot.red{background:var(--red);box-shadow:0 0 6px rgba(192,57,43,.3)}
+.risk-dot.amber{background:var(--orange);box-shadow:0 0 6px rgba(230,126,34,.3)}
+.risk-dot.green{background:var(--green);box-shadow:0 0 6px rgba(39,174,96,.3)}
+.risk-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.risk-text{flex:1}
+.risk-tag{margin-left:auto;flex-shrink:0}
+
+/* ========== VALUATION CALC ========== */
+.val-controls{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.val-group label{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;color:var(--text-light);margin-bottom:.5rem}
+.val-group select,.val-group input[type=range]{width:100%;padding:.5rem;border:1px solid #ddd;border-radius:6px;font-size:.9rem;background:#fff}
+.val-group input[type=range]{padding:0;margin-top:.3rem;accent-color:var(--gold)}
+.val-result{background:var(--navy);color:#fff;border-radius:var(--radius);padding:1.5rem;text-align:center}
+.val-result .val-amount{font-size:2.2rem;font-weight:800;color:var(--gold)}
+.val-result .val-label{font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px}
+.val-bar-wrap{margin-top:1.5rem}
+.val-bar{height:32px;border-radius:16px;background:#e8e8e8;position:relative;overflow:visible}
+.val-bar-fill{height:100%;border-radius:16px;transition:width .4s}
+.val-bar-marker{position:absolute;top:-8px;height:48px;width:3px;border-radius:2px;transform:translateX(-50%)}
+.val-bar-label{position:absolute;top:-26px;transform:translateX(-50%);font-size:.7rem;font-weight:700;white-space:nowrap}
+.val-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
+.val-cmp{text-align:center;padding:.8rem;border-radius:8px;background:var(--gold-light)}
+.val-cmp .cmp-val{font-size:1.2rem;font-weight:800;color:var(--navy)}
+.val-cmp .cmp-label{font-size:.7rem;color:var(--text-light)}
+
+/* ========== DEAL STRUCTURE ========== */
+.ds-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.ds-label{width:120px;font-weight:600;font-size:.85rem;flex-shrink:0}
+.ds-slider{flex:1;min-width:150px;accent-color:var(--gold)}
+.ds-value{width:120px;text-align:right;font-weight:700;font-size:.95rem;flex-shrink:0}
+.ds-input{width:160px;padding:.5rem .8rem;border:2px solid var(--gold);border-radius:8px;font-size:1.1rem;font-weight:700;color:var(--navy);text-align:right}
+.ds-timeline{display:flex;justify-content:space-between;margin-top:1.5rem;padding:1rem;background:var(--gold-light);border-radius:8px;position:relative}
+.ds-timeline::before{content:'';position:absolute;top:50%;left:10%;right:10%;height:3px;background:var(--gold);transform:translateY(-50%)}
+.ds-tl-point{text-align:center;z-index:1;background:var(--gold-light);padding:0 .5rem}
+.ds-tl-dot{width:16px;height:16px;border-radius:50%;background:var(--navy);margin:0 auto .4rem;border:3px solid var(--gold)}
+.ds-tl-label{font-size:.7rem;font-weight:600;color:var(--navy)}
+.ds-tl-val{font-size:.85rem;font-weight:700;color:var(--navy)}
+
+/* ========== FIX COST TABLE ========== */
+.fix-input{width:90px;padding:4px 8px;border:1px solid #ddd;border-radius:4px;text-align:right;font-size:.85rem;font-family:inherit}
+.fix-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.2)}
+
+/* ========== QUESTIONS ========== */
+.q-item{display:flex;align-items:start;gap:.8rem;padding:.7rem 0;border-bottom:1px solid #f0f0f0;font-size:.85rem}
+.q-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0;margin-top:2px;cursor:pointer}
+.q-item label{cursor:pointer;flex:1}
+.q-progress{margin-top:1rem;display:flex;align-items:center;gap:1rem}
+.q-progress-bar{flex:1;height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden}
+.q-progress-fill{height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+.q-progress-text{font-size:.8rem;font-weight:600;color:var(--text-light);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border:none;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-dark);color:#fff}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy-light)}
+.btn-outline{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+.btn-outline:hover{background:var(--navy);color:#fff}
+.btn-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ========== FOOTER ========== */
+.footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:2rem 1.5rem;font-size:.75rem;margin-top:2rem}
+.footer strong{color:var(--gold)}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .header-inner{flex-direction:column;text-align:center}
+  .header-meta{text-align:center}
+  .chart-row,.bs-grid,.val-controls{grid-template-columns:1fr}
+  .deal-grid{grid-template-columns:1fr 1fr}
+  .val-compare{grid-template-columns:1fr}
+  .ds-row{flex-direction:column;align-items:stretch}
+  .ds-label,.ds-value{width:auto;text-align:left}
+  .nav a{padding:.6rem .7rem;font-size:.72rem}
+}
+@media(max-width:480px){
+  .deal-grid{grid-template-columns:1fr}
+  html{font-size:14px}
+}
+
+/* ========== PRINT ========== */
+@media print{
+  .header,.nav{position:static}
+  .nav{display:none}
+  body{background:#fff;font-size:11px}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid;page-break-inside:avoid}
+  .section{page-break-inside:avoid}
+  .btn,.ds-slider,input[type=range]{display:none}
+  .container{padding:0}
+  .red-flag{border:2px solid var(--red)}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">PGG</div>
+      <div>
+        <h1>PGG <span>Advisory</span></h1>
+        <div class="brand-sub">Acquisition Analysis Engine &mdash; Module 2</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div>Report Generated: <strong>15 March 2026</strong></div>
+      <div>Status: <strong>Active Due Diligence</strong></div>
+      <div>Classification: <strong>Confidential</strong></div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav" id="topNav">
+  <div class="nav-inner">
+    <a href="#deal-summary">Deal Summary</a>
+    <a href="#financials">Financials</a>
+    <a href="#monthly-gap">Monthly Gap</a>
+    <a href="#concentration">Concentration</a>
+    <a href="#balance-sheet">Balance Sheet</a>
+    <a href="#risk-matrix">Risk Matrix</a>
+    <a href="#valuation">Valuation</a>
+    <a href="#deal-structure">Deal Structure</a>
+    <a href="#fix-costs">Fix Costs</a>
+    <a href="#questions">DD Questions</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ==================== 1. DEAL SUMMARY ==================== -->
+<div class="section" id="deal-summary">
+  <div class="card">
+    <div class="section-title"><span class="num">1</span> Deal Summary</div>
+    <div class="section-subtitle">Cedar Hope Care Services Ltd &mdash; Domiciliary Care Acquisition</div>
+    <div class="deal-grid">
+      <div class="deal-item">
+        <label>Target Company</label>
+        <div class="value">Cedar Hope Care Services Ltd</div>
+        <div style="font-size:.75rem;color:var(--text-light);margin-top:2px">Company #12497302</div>
+      </div>
+      <div class="deal-item">
+        <label>Asking Price</label>
+        <div class="value price">&pound;1,400,000</div>
+      </div>
+      <div class="deal-item">
+        <label>Seller</label>
+        <div class="value">ISWP Holding Ltd</div>
+      </div>
+      <div class="deal-item">
+        <label>Buyer</label>
+        <div class="value">True Contracting Ltd</div>
+        <div style="font-size:.75rem;color:var(--text-light);margin-top:2px">Erin O'Connor</div>
+      </div>
+      <div class="deal-item">
+        <label>Target Completion</label>
+        <div class="value">May 2026</div>
+      </div>
+      <div class="deal-item">
+        <label>Deal Multiple (Stated)</label>
+        <div class="value">4&ndash;5x EBITDA</div>
+      </div>
+      <div class="deal-item">
+        <label>Exclusivity Period</label>
+        <div class="value">3 Months</div>
+      </div>
+      <div class="deal-item">
+        <label>Non-Compete</label>
+        <div class="value">24 Months</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. FINANCIAL PERFORMANCE ==================== -->
+<div class="section" id="financials">
+  <div class="card">
+    <div class="section-title"><span class="num">2</span> Financial Performance (5 Years)</div>
+    <div class="section-subtitle">Companies House filed accounts &mdash; Cedar Hope Care Services Ltd</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th class="text-right">Turnover</th>
+            <th class="text-right">Net Profit</th>
+            <th class="text-right">Corp Tax</th>
+            <th class="text-right">Margin</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2020&ndash;21</td>
+            <td class="text-right">&pound;63,444</td>
+            <td class="text-right" style="color:var(--red)">&minus;&pound;5,156</td>
+            <td class="text-right">&pound;0</td>
+            <td class="text-right" style="color:var(--red)">Loss</td>
+            <td class="text-center"><span class="badge badge-red">Loss</span></td>
+          </tr>
+          <tr>
+            <td>2021&ndash;22</td>
+            <td class="text-right">&pound;520,119</td>
+            <td class="text-right">&pound;4,868</td>
+            <td class="text-right">&pound;48</td>
+            <td class="text-right">0.9%</td>
+            <td class="text-center"><span class="badge badge-amber">Amber</span></td>
+          </tr>
+          <tr>
+            <td>2022&ndash;23</td>
+            <td class="text-right">&pound;1,159,560</td>
+            <td class="text-right">&pound;103,404</td>
+            <td class="text-right">&pound;19,507</td>
+            <td class="text-right">8.9%</td>
+            <td class="text-center"><span class="badge badge-green">Green</span></td>
+          </tr>
+          <tr>
+            <td>2023&ndash;24</td>
+            <td class="text-right">&pound;1,530,472</td>
+            <td class="text-right">&pound;161,448</td>
+            <td class="text-right">&pound;39,231</td>
+            <td class="text-right">10.5%</td>
+            <td class="text-center"><span class="badge badge-green">Green</span></td>
+          </tr>
+          <tr style="background:rgba(39,174,96,.05)">
+            <td><strong>2024&ndash;25</strong></td>
+            <td class="text-right"><strong>&pound;1,756,102</strong></td>
+            <td class="text-right" style="color:var(--green)"><strong>&pound;319,603</strong></td>
+            <td class="text-right"><strong>&pound;79,337</strong></td>
+            <td class="text-right"><strong>18.2%</strong></td>
+            <td class="text-center"><span class="badge badge-green">Best Year</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-container" style="max-height:360px;margin-top:1.5rem">
+      <canvas id="financialChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. MONTHLY vs ANNUAL GAP ==================== -->
+<div class="section" id="monthly-gap">
+  <div class="card card-danger">
+    <div class="section-title"><span class="num">3</span> Monthly vs Annual Comparison</div>
+    <div class="section-subtitle">October 2025 management accounts vs. 2024-25 annual filed accounts</div>
+    <div class="red-flag">
+      <div class="red-flag-title">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 1L19 18H1L10 1Z" fill="#c0392b"/><text x="10" y="15" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">!</text></svg>
+        RED FLAG &mdash; Significant Profit Discrepancy Detected
+      </div>
+      <div class="red-flag-grid">
+        <div class="rf-stat">
+          <div class="rf-val">&pound;7,636</div>
+          <div class="rf-label">Oct 2025 Monthly Net Profit</div>
+        </div>
+        <div class="rf-stat">
+          <div class="rf-val">&pound;91,632</div>
+          <div class="rf-label">Annualised Run Rate</div>
+        </div>
+        <div class="rf-stat">
+          <div class="rf-val">&pound;319,603</div>
+          <div class="rf-label">2024-25 Reported Annual Profit</div>
+        </div>
+        <div class="rf-stat">
+          <div class="rf-val">71%</div>
+          <div class="rf-label">Gap Below Reported</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem">
+      <div style="padding:1rem;background:var(--gold-light);border-radius:8px">
+        <div style="font-size:.7rem;text-transform:uppercase;color:var(--text-light);font-weight:600">Monthly Revenue</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--navy)">&pound;126,796</div>
+      </div>
+      <div style="padding:1rem;background:var(--gold-light);border-radius:8px">
+        <div style="font-size:.7rem;text-transform:uppercase;color:var(--text-light);font-weight:600">Total Payroll</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--red)">&pound;95,298</div>
+      </div>
+      <div style="padding:1rem;background:var(--gold-light);border-radius:8px">
+        <div style="font-size:.7rem;text-transform:uppercase;color:var(--text-light);font-weight:600">Payroll Ratio</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--red)">75.2%</div>
+      </div>
+      <div style="padding:1rem;background:var(--gold-light);border-radius:8px">
+        <div style="font-size:.7rem;text-transform:uppercase;color:var(--text-light);font-weight:600">Profit Gap</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--red)">&pound;227,971</div>
+      </div>
+    </div>
+    <div class="chart-container" style="max-height:280px;margin-top:1.5rem">
+      <canvas id="monthlyGapChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. REVENUE CONCENTRATION ==================== -->
+<div class="section" id="concentration">
+  <div class="card card-danger">
+    <div class="section-title"><span class="num">4</span> Revenue Concentration Analysis</div>
+    <div class="section-subtitle">Commissioner breakdown &mdash; Herfindahl-Hirschman Index (HHI) assessment</div>
+    <div class="chart-row">
+      <div>
+        <div class="chart-container" style="max-height:300px">
+          <canvas id="concentrationChart"></canvas>
+        </div>
+      </div>
+      <div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Commissioner</th><th class="text-right">Share</th><th class="text-center">Risk</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>West Berkshire Council</td>
+                <td class="text-right" style="font-weight:700">~48%</td>
+                <td class="text-center"><span class="badge badge-red">High</span></td>
+              </tr>
+              <tr>
+                <td>Hampshire County Council</td>
+                <td class="text-right">~15%</td>
+                <td class="text-center"><span class="badge badge-amber">Medium</span></td>
+              </tr>
+              <tr>
+                <td>Brighter Futures (Reading)</td>
+                <td class="text-right">~12%</td>
+                <td class="text-center"><span class="badge badge-green">Low</span></td>
+              </tr>
+              <tr>
+                <td>Other LAs (8+)</td>
+                <td class="text-right">~25%</td>
+                <td class="text-center"><span class="badge badge-green">Low</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:1.5rem">
+          <div style="font-size:.75rem;text-transform:uppercase;font-weight:600;color:var(--text-light);margin-bottom:.5rem">Herfindahl-Hirschman Index (HHI)</div>
+          <div class="hhi-gauge">
+            <div class="hhi-score">2,711</div>
+            <div style="flex:1;min-width:160px">
+              <div class="hhi-bar">
+                <div class="hhi-marker" style="left:90%"></div>
+              </div>
+              <div class="hhi-labels">
+                <span>Unconcentrated<br>&lt;1,500</span>
+                <span>Moderate<br>1,500&ndash;2,500</span>
+                <span>Highly Concentrated<br>&gt;2,500</span>
+              </div>
+            </div>
+          </div>
+          <span class="badge badge-red" style="font-size:.8rem;padding:4px 14px">HIGHLY CONCENTRATED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 5. BALANCE SHEET ==================== -->
+<div class="section" id="balance-sheet">
+  <div class="card card-warning">
+    <div class="section-title"><span class="num">5</span> Balance Sheet Snapshot</div>
+    <div class="section-subtitle">As at latest filed accounts &mdash; Cedar Hope Care Services Ltd</div>
+    <div class="bs-grid">
+      <div>
+        <h4>Assets</h4>
+        <div class="bs-row"><span>NatWest Current Account</span><span class="bs-val">&pound;17,699</span></div>
+        <div class="bs-row"><span>Novuna Factoring</span><span class="bs-val">&pound;147,649</span></div>
+        <div class="bs-row"><span>Trade Debtors</span><span class="bs-val">&pound;324,026</span></div>
+        <div class="bs-row"><span>Fixed Assets</span><span class="bs-val">&pound;30,820</span></div>
+        <div class="bs-row"><span>Intercompany Receivables</span><span class="bs-val">&pound;81,022</span></div>
+        <div class="bs-row"><span>Other Assets</span><span class="bs-val">&pound;12,899</span></div>
+        <div class="bs-row total"><span>Total Assets</span><span class="bs-val">&pound;614,115</span></div>
+      </div>
+      <div>
+        <h4>Liabilities</h4>
+        <div class="bs-row"><span>Trade Creditors</span><span class="bs-val">&pound;4,499</span></div>
+        <div class="bs-row"><span>HMRC</span><span class="bs-val">&pound;24,771</span></div>
+        <div class="bs-row"><span>Pensions</span><span class="bs-val">&pound;15,956</span></div>
+        <div class="bs-row"><span>Car Loan</span><span class="bs-val">&pound;10,886</span></div>
+        <div class="bs-row"><span>Intercompany Payable</span><span class="bs-val">&pound;72,466</span></div>
+        <div class="bs-row"><span>Director's Account</span><span class="bs-val">&pound;12,512</span></div>
+        <div class="bs-row"><span>Corporation Tax</span><span class="bs-val">&pound;79,337</span></div>
+        <div class="bs-row total"><span>Total Liabilities</span><span class="bs-val">&pound;220,427</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem;padding:1rem;background:var(--gold-light);border-radius:8px">
+      <div style="font-size:.7rem;text-transform:uppercase;color:var(--text-light);font-weight:600">Net Assets (Equity)</div>
+      <div style="font-size:2rem;font-weight:800;color:var(--navy)">&pound;645,210</div>
+    </div>
+    <div class="cash-warning">
+      <div class="warn-icon">&#9888;</div>
+      <div>
+        <strong style="color:var(--orange)">Cash Position Warning:</strong> Only <strong>&pound;17,699</strong> in actual liquid cash (NatWest account). The &pound;147,649 shown via Novuna is tied up in invoice factoring &mdash; this is <em>not</em> freely available cash. Effective working capital is critically low relative to &pound;1.76M turnover. The &pound;324k in trade debtors requires close examination of ageing and recoverability.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 6. RISK MATRIX ==================== -->
+<div class="section" id="risk-matrix">
+  <div class="card">
+    <div class="section-title"><span class="num">6</span> Risk Matrix</div>
+    <div class="section-subtitle">Identified risks ranked by severity &mdash; traffic light assessment</div>
+    <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
+      <span class="badge badge-red" style="padding:4px 12px">RED &mdash; Critical (5)</span>
+      <span class="badge badge-amber" style="padding:4px 12px">AMBER &mdash; Elevated (5)</span>
+    </div>
+    <div>
+      <div class="risk-row"><span class="risk-num">1</span><span class="risk-dot red"></span><span class="risk-text"><strong>Profit Discrepancy</strong> &mdash; Monthly run rate 71% below reported annual profit</span><span class="risk-tag"><span class="badge badge-red">Critical</span></span></div>
+      <div class="risk-row"><span class="risk-num">2</span><span class="risk-dot red"></span><span class="risk-text"><strong>Commissioner Concentration</strong> &mdash; 48% revenue from single local authority</span><span class="risk-tag"><span class="badge badge-red">Critical</span></span></div>
+      <div class="risk-row"><span class="risk-num">3</span><span class="risk-dot red"></span><span class="risk-text"><strong>CQC Rating</strong> &mdash; "Requires Improvement" rating from Care Quality Commission</span><span class="risk-tag"><span class="badge badge-red">Critical</span></span></div>
+      <div class="risk-row"><span class="risk-num">4</span><span class="risk-dot red"></span><span class="risk-text"><strong>Intercompany Structure</strong> &mdash; 5 connected entities, &pound;81k+ owed to Cedar Hope</span><span class="risk-tag"><span class="badge badge-red">Critical</span></span></div>
+      <div class="risk-row"><span class="risk-num">5</span><span class="risk-dot amber"></span><span class="risk-text"><strong>Invoice Factoring Dependency</strong> &mdash; &pound;148k via Novuna factoring facility</span><span class="risk-tag"><span class="badge badge-amber">Elevated</span></span></div>
+      <div class="risk-row"><span class="risk-num">6</span><span class="risk-dot amber"></span><span class="risk-text"><strong>Payroll Ratio</strong> &mdash; 75% of revenue consumed by payroll costs</span><span class="risk-tag"><span class="badge badge-amber">Elevated</span></span></div>
+      <div class="risk-row"><span class="risk-num">7</span><span class="risk-dot amber"></span><span class="risk-text"><strong>Aged Debtors</strong> &mdash; &pound;30k overdue, some balances 3+ years old</span><span class="risk-tag"><span class="badge badge-amber">Elevated</span></span></div>
+      <div class="risk-row"><span class="risk-num">8</span><span class="risk-dot amber"></span><span class="risk-text"><strong>Director's Loan Account</strong> &mdash; &minus;&pound;12,512 balance outstanding</span><span class="risk-tag"><span class="badge badge-amber">Elevated</span></span></div>
+      <div class="risk-row"><span class="risk-num">9</span><span class="risk-dot amber"></span><span class="risk-text"><strong>Visa-Sponsored Staff</strong> &mdash; TUPE transfer complexity with sponsored workers</span><span class="risk-tag"><span class="badge badge-amber">Elevated</span></span></div>
+      <div class="risk-row"><span class="risk-num">10</span><span class="risk-dot red"></span><span class="risk-text"><strong>Property Excluded</strong> &mdash; Cricketers property excluded from sale</span><span class="risk-tag"><span class="badge badge-red">Critical</span></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. VALUATION CALCULATOR ==================== -->
+<div class="section" id="valuation">
+  <div class="card">
+    <div class="section-title"><span class="num">7</span> Valuation Calculator</div>
+    <div class="section-subtitle">Interactive EBITDA multiple-based valuation &mdash; adjust profit basis and multiple</div>
+    <div class="val-controls">
+      <div class="val-group">
+        <label>Profit Basis</label>
+        <select id="valBasis" onchange="updateValuation()">
+          <option value="319603">Best Year (2024-25): &pound;319,603</option>
+          <option value="194818" selected>3-Year Average: &pound;194,818</option>
+          <option value="91632">Monthly Run Rate (annualised): &pound;91,632</option>
+        </select>
+      </div>
+      <div class="val-group">
+        <label>EBITDA Multiple: <strong id="multipleLabel">3.5x</strong></label>
+        <input type="range" id="valMultiple" min="2" max="6" step="0.5" value="3.5" oninput="updateValuation()">
+        <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-light)"><span>2.0x</span><span>4.0x</span><span>6.0x</span></div>
+      </div>
+    </div>
+    <div class="val-result">
+      <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5)">Calculated Valuation</div>
+      <div class="val-amount" id="valAmount">&pound;681,863</div>
+      <div class="val-label" id="valDetail">3-Year Average (&pound;194,818) &times; 3.5x</div>
+    </div>
+    <div class="val-bar-wrap" style="margin-top:1.5rem">
+      <div style="font-size:.75rem;font-weight:600;color:var(--text-light);margin-bottom:.5rem">PRICE POSITION MAP</div>
+      <div style="position:relative;padding-top:30px">
+        <div class="val-bar">
+          <div class="val-bar-fill" id="valBarFill" style="width:49%;background:linear-gradient(90deg,var(--green),var(--orange))"></div>
+          <div class="val-bar-marker" id="valMarkerCalc" style="left:49%;background:var(--green)">
+            <div class="val-bar-label" id="valMarkerCalcLabel" style="color:var(--green)">&pound;682k</div>
+          </div>
+          <div class="val-bar-marker" style="left:100%;background:var(--red)">
+            <div class="val-bar-label" style="color:var(--red)">&pound;1.4M Asking</div>
+          </div>
+          <div class="val-bar-marker" id="valMarkerRec" style="left:60%;background:var(--gold);width:40px;border-radius:4px;opacity:.3">
+            <div class="val-bar-label" style="color:var(--gold-dark)">&pound;750k&ndash;1M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="val-compare" style="margin-top:2rem">
+      <div class="val-cmp">
+        <div class="cmp-label">Asking Price</div>
+        <div class="cmp-val" style="color:var(--red)">&pound;1,400,000</div>
+      </div>
+      <div class="val-cmp">
+        <div class="cmp-label">PGG Recommended Range</div>
+        <div class="cmp-val" style="color:var(--green)">&pound;750k &ndash; &pound;1M</div>
+      </div>
+      <div class="val-cmp">
+        <div class="cmp-label">Calculated Value</div>
+        <div class="cmp-val" id="valCmpCalc" style="color:var(--navy)">&pound;681,863</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. DEAL STRUCTURE BUILDER ==================== -->
+<div class="section" id="deal-structure">
+  <div class="card">
+    <div class="section-title"><span class="num">8</span> Deal Structure Builder</div>
+    <div class="section-subtitle">Configure payment terms &mdash; completion, deferred, and earnout splits must total 100%</div>
+    <div style="margin-bottom:1.5rem">
+      <label style="font-size:.75rem;font-weight:600;text-transform:uppercase;color:var(--text-light)">Total Deal Value</label>
+      <div style="margin-top:.4rem">
+        <span style="font-size:1rem;font-weight:600;color:var(--navy)">&pound;</span>
+        <input type="number" class="ds-input" id="dsDealValue" value="850000" oninput="updateDealStructure()" style="margin-left:.3rem">
+      </div>
+    </div>
+    <div class="ds-row">
+      <div class="ds-label">Completion</div>
+      <input type="range" class="ds-slider" id="dsCompletion" min="0" max="100" value="65" oninput="adjustSliders('completion')">
+      <div class="ds-value"><span id="dsCompPct">65%</span> &mdash; <strong id="dsCompVal">&pound;552,500</strong></div>
+    </div>
+    <div class="ds-row">
+      <div class="ds-label">Deferred</div>
+      <input type="range" class="ds-slider" id="dsDeferred" min="0" max="100" value="20" oninput="adjustSliders('deferred')">
+      <div class="ds-value"><span id="dsDeferPct">20%</span> &mdash; <strong id="dsDeferVal">&pound;170,000</strong></div>
+    </div>
+    <div class="ds-row">
+      <div class="ds-label">Earnout</div>
+      <input type="range" class="ds-slider" id="dsEarnout" min="0" max="100" value="15" oninput="adjustSliders('earnout')">
+      <div class="ds-value"><span id="dsEarnPct">15%</span> &mdash; <strong id="dsEarnVal">&pound;127,500</strong></div>
+    </div>
+    <div class="ds-timeline">
+      <div class="ds-tl-point">
+        <div class="ds-tl-dot"></div>
+        <div class="ds-tl-label">Day 1 &mdash; Completion</div>
+        <div class="ds-tl-val" id="dsTlComp">&pound;552,500</div>
+      </div>
+      <div class="ds-tl-point">
+        <div class="ds-tl-dot"></div>
+        <div class="ds-tl-label">12&ndash;18 Months &mdash; Deferred</div>
+        <div class="ds-tl-val" id="dsTlDefer">&pound;170,000</div>
+      </div>
+      <div class="ds-tl-point">
+        <div class="ds-tl-dot"></div>
+        <div class="ds-tl-label">12&ndash;24 Months &mdash; Earnout</div>
+        <div class="ds-tl-val" id="dsTlEarn">&pound;127,500</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 9. FIX COST CALCULATOR ==================== -->
+<div class="section" id="fix-costs">
+  <div class="card card-success">
+    <div class="section-title"><span class="num">9</span> Fix Cost Calculator</div>
+    <div class="section-subtitle">Estimated post-acquisition investment and return &mdash; editable values</div>
+    <div class="table-wrap">
+      <table id="fixTable">
+        <thead>
+          <tr>
+            <th>Fix Item</th>
+            <th class="text-right">Est. Cost (&pound;)</th>
+            <th class="text-right">Annual Saving (&pound;)</th>
+            <th class="text-right">Payback (yrs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CQC Remediation</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="25000" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="15000" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">1.7</td>
+          </tr>
+          <tr>
+            <td>Reduce Agency Staff</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="15000" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="40000" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">0.4</td>
+          </tr>
+          <tr>
+            <td>Renegotiate Rates (+10%)</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="5000" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="175000" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">0.03</td>
+          </tr>
+          <tr>
+            <td>Payroll Optimisation</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="10000" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="30000" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">0.3</td>
+          </tr>
+          <tr>
+            <td>Settle Intercompany Balances</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="0" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="8500" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">0</td>
+          </tr>
+          <tr>
+            <td>Replace Invoice Factoring</td>
+            <td class="text-right"><input class="fix-input fix-cost" type="number" value="20000" oninput="updateFixCosts()"></td>
+            <td class="text-right"><input class="fix-input fix-saving" type="number" value="10000" oninput="updateFixCosts()"></td>
+            <td class="text-right fix-payback">2.0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="row-total">
+            <td><strong>TOTALS</strong></td>
+            <td class="text-right"><strong id="fixTotalCost">&pound;75,000</strong></td>
+            <td class="text-right"><strong id="fixTotalSaving">&pound;278,500</strong></td>
+            <td class="text-right"><strong id="fixAvgPayback">0.3 yrs</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div style="margin-top:1rem;padding:1rem;background:rgba(39,174,96,.06);border-radius:8px;font-size:.85rem">
+      <strong style="color:var(--green)">ROI Summary:</strong> Total investment of <strong id="fixRoiCost">&pound;75,000</strong> yields estimated annual savings of <strong id="fixRoiSaving">&pound;278,500</strong> &mdash; payback in <strong id="fixRoiPayback">0.3 years</strong> (blended).
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 10. DD QUESTIONS ==================== -->
+<div class="section" id="questions">
+  <div class="card">
+    <div class="section-title"><span class="num">10</span> Due Diligence Questions</div>
+    <div class="section-subtitle">Outstanding questions for seller &mdash; check off as answered</div>
+    <div id="questionsList">
+      <div class="q-item"><input type="checkbox" id="q1" onchange="updateQProgress()"><label for="q1">Why are you selling immediately after the best financial year in the company's history?</label></div>
+      <div class="q-item"><input type="checkbox" id="q2" onchange="updateQProgress()"><label for="q2">Please provide full monthly management accounts for April&ndash;December 2025.</label></div>
+      <div class="q-item"><input type="checkbox" id="q3" onchange="updateQProgress()"><label for="q3">Will all intercompany balances (&pound;81k receivables, &pound;72k payables) settle to zero before completion?</label></div>
+      <div class="q-item"><input type="checkbox" id="q4" onchange="updateQProgress()"><label for="q4">Does the &pound;322k cash balance (including factoring) remain with the company on transfer?</label></div>
+      <div class="q-item"><input type="checkbox" id="q5" onchange="updateQProgress()"><label for="q5">Will corporation tax liability (&pound;79,337) be paid in full before completion?</label></div>
+      <div class="q-item"><input type="checkbox" id="q6" onchange="updateQProgress()"><label for="q6">What specifically caused the CQC "Requires Improvement" rating and what remediation is underway?</label></div>
+      <div class="q-item"><input type="checkbox" id="q7" onchange="updateQProgress()"><label for="q7">Why did two directors resign in 2022 and what were the circumstances?</label></div>
+      <div class="q-item"><input type="checkbox" id="q8" onchange="updateQProgress()"><label for="q8">What are the property lease terms for the operating premises and remaining duration?</label></div>
+      <div class="q-item"><input type="checkbox" id="q9" onchange="updateQProgress()"><label for="q9">Provide full staff list with agency vs permanent split, visa status, and TUPE implications.</label></div>
+      <div class="q-item"><input type="checkbox" id="q10" onchange="updateQProgress()"><label for="q10">What caused the profit jump from &pound;161k (2023-24) to &pound;319k (2024-25)?</label></div>
+      <div class="q-item"><input type="checkbox" id="q11" onchange="updateQProgress()"><label for="q11">Explain the Harry James Recruitment relationship and ongoing contractual obligations.</label></div>
+      <div class="q-item"><input type="checkbox" id="q12" onchange="updateQProgress()"><label for="q12">Are there any outstanding legal claims, disputes, or regulatory actions?</label></div>
+      <div class="q-item"><input type="checkbox" id="q13" onchange="updateQProgress()"><label for="q13">Where is the 12-month financial forecast and what assumptions underpin it?</label></div>
+    </div>
+    <div class="q-progress">
+      <div class="q-progress-bar"><div class="q-progress-fill" id="qProgressFill" style="width:0%"></div></div>
+      <div class="q-progress-text" id="qProgressText">0 of 13 answered</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="copyQuestions()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M11 5V3.5A1.5 1.5 0 009.5 2h-6A1.5 1.5 0 002 3.5v6A1.5 1.5 0 003.5 11H5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        Copy All to Clipboard
+      </button>
+      <button class="btn btn-outline" onclick="copyUnanswered()">Copy Unanswered Only</button>
+    </div>
+    <div id="copyFeedback" style="margin-top:.5rem;font-size:.8rem;color:var(--green);opacity:0;transition:opacity .3s"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div><strong>PGG Advisory</strong> &mdash; Acquisition Analysis Engine v2.0</div>
+  <div style="margin-top:.4rem">Confidential &mdash; Prepared for True Contracting Ltd (Erin O'Connor)</div>
+  <div style="margin-top:.4rem">Generated 15 March 2026 &bull; Data sources: Companies House, CQC, Management Accounts (Oct 2025)</div>
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+/* ========== NAV ACTIVE STATE ========== */
+(function(){
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav a');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = e.target.id;
+        navLinks.forEach(l=>{
+          l.classList.toggle('active', l.getAttribute('href')==='#'+id);
+        });
+      }
+    });
+  },{rootMargin:'-100px 0px -60% 0px',threshold:0});
+  sections.forEach(s=>observer.observe(s));
+})();
+
+/* ========== CHART: FINANCIAL PERFORMANCE ========== */
+const finCtx = document.getElementById('financialChart').getContext('2d');
+new Chart(finCtx, {
+  type:'bar',
+  data:{
+    labels:['2020-21','2021-22','2022-23','2023-24','2024-25'],
+    datasets:[
+      {label:'Turnover',data:[63444,520119,1159560,1530472,1756102],backgroundColor:'rgba(26,39,68,.75)',borderRadius:4,order:2},
+      {label:'Net Profit',data:[-5156,4868,103404,161448,319603],backgroundColor:'rgba(201,168,76,.85)',borderRadius:4,order:1}
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'top',labels:{usePointStyle:true,padding:16,font:{size:12}}},
+      tooltip:{
+        callbacks:{
+          label:function(c){return c.dataset.label+': \u00A3'+c.raw.toLocaleString()}
+        }
+      }
+    },
+    scales:{
+      y:{
+        ticks:{callback:v=>'\u00A3'+(v>=1000?(v/1000)+'k':v)},
+        grid:{color:'rgba(0,0,0,.05)'}
+      },
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+/* ========== CHART: MONTHLY GAP ========== */
+const gapCtx = document.getElementById('monthlyGapChart').getContext('2d');
+new Chart(gapCtx, {
+  type:'bar',
+  data:{
+    labels:['Monthly Run Rate\n(Annualised)','2024-25 Reported\nAnnual Profit'],
+    datasets:[{
+      data:[91632,319603],
+      backgroundColor:['rgba(192,57,43,.8)','rgba(39,174,96,.8)'],
+      borderRadius:6,
+      barThickness:80
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    indexAxis:'y',
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>'\u00A3'+c.raw.toLocaleString()}}
+    },
+    scales:{
+      x:{ticks:{callback:v=>'\u00A3'+(v/1000)+'k'},grid:{color:'rgba(0,0,0,.05)'}},
+      y:{grid:{display:false}}
+    }
+  }
+});
+
+/* ========== CHART: CONCENTRATION ========== */
+const concCtx = document.getElementById('concentrationChart').getContext('2d');
+new Chart(concCtx, {
+  type:'doughnut',
+  data:{
+    labels:['West Berkshire Council','Hampshire CC','Brighter Futures','Other LAs (8+)'],
+    datasets:[{
+      data:[48,15,12,25],
+      backgroundColor:['rgba(192,57,43,.85)','rgba(230,126,34,.85)','rgba(39,174,96,.85)','rgba(26,39,68,.6)'],
+      borderWidth:2,
+      borderColor:'#fff'
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    cutout:'55%',
+    plugins:{
+      legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.label+': '+c.raw+'%'}}
+    }
+  }
+});
+
+/* ========== VALUATION CALCULATOR ========== */
+function updateValuation(){
+  const basis = parseFloat(document.getElementById('valBasis').value);
+  const multiple = parseFloat(document.getElementById('valMultiple').value);
+  const val = Math.round(basis * multiple);
+  const basisText = document.getElementById('valBasis').options[document.getElementById('valBasis').selectedIndex].text.split(':')[0];
+
+  document.getElementById('multipleLabel').textContent = multiple.toFixed(1)+'x';
+  document.getElementById('valAmount').textContent = '\u00A3'+val.toLocaleString();
+  document.getElementById('valDetail').textContent = basisText+' (\u00A3'+basis.toLocaleString()+') \u00D7 '+multiple.toFixed(1)+'x';
+  document.getElementById('valCmpCalc').textContent = '\u00A3'+val.toLocaleString();
+
+  const maxVal = 1400000;
+  const pct = Math.min((val/maxVal)*100, 100);
+  document.getElementById('valBarFill').style.width = pct+'%';
+  document.getElementById('valMarkerCalc').style.left = pct+'%';
+  const shortVal = val >= 1000000 ? '\u00A3'+(val/1000000).toFixed(1)+'M' : '\u00A3'+Math.round(val/1000)+'k';
+  document.getElementById('valMarkerCalcLabel').textContent = shortVal;
+
+  const color = val < 750000 ? 'var(--green)' : val < 1000000 ? 'var(--orange)' : 'var(--red)';
+  document.getElementById('valBarFill').style.background = 'linear-gradient(90deg, var(--green),'+color+')';
+  document.getElementById('valMarkerCalc').style.background = color;
+  document.getElementById('valMarkerCalcLabel').style.color = color;
+}
+
+/* ========== DEAL STRUCTURE ========== */
+function adjustSliders(changed){
+  let comp = parseInt(document.getElementById('dsCompletion').value);
+  let def = parseInt(document.getElementById('dsDeferred').value);
+  let earn = parseInt(document.getElementById('dsEarnout').value);
+  const total = comp + def + earn;
+
+  if(total !== 100){
+    const diff = total - 100;
+    if(changed==='completion'){
+      const ratio = def + earn > 0 ? def / (def + earn) : 0.5;
+      def = Math.max(0, Math.round(def - diff * ratio));
+      earn = 100 - comp - def;
+      if(earn < 0){ earn = 0; def = 100 - comp; }
+    } else if(changed==='deferred'){
+      const ratio = comp + earn > 0 ? comp / (comp + earn) : 0.5;
+      comp = Math.max(0, Math.round(comp - diff * ratio));
+      earn = 100 - comp - def;
+      if(earn < 0){ earn = 0; comp = 100 - def; }
+    } else {
+      const ratio = comp + def > 0 ? comp / (comp + def) : 0.5;
+      comp = Math.max(0, Math.round(comp - diff * ratio));
+      def = 100 - comp - earn;
+      if(def < 0){ def = 0; comp = 100 - earn; }
+    }
+    document.getElementById('dsCompletion').value = comp;
+    document.getElementById('dsDeferred').value = def;
+    document.getElementById('dsEarnout').value = earn;
+  }
+  updateDealStructure();
+}
+
+function updateDealStructure(){
+  const dealVal = parseFloat(document.getElementById('dsDealValue').value) || 0;
+  const comp = parseInt(document.getElementById('dsCompletion').value);
+  const def = parseInt(document.getElementById('dsDeferred').value);
+  const earn = parseInt(document.getElementById('dsEarnout').value);
+
+  const fmt = v => '\u00A3'+Math.round(v).toLocaleString();
+
+  document.getElementById('dsCompPct').textContent = comp+'%';
+  document.getElementById('dsDeferPct').textContent = def+'%';
+  document.getElementById('dsEarnPct').textContent = earn+'%';
+
+  const compVal = dealVal * comp / 100;
+  const defVal = dealVal * def / 100;
+  const earnVal = dealVal * earn / 100;
+
+  document.getElementById('dsCompVal').textContent = fmt(compVal);
+  document.getElementById('dsDeferVal').textContent = fmt(defVal);
+  document.getElementById('dsEarnVal').textContent = fmt(earnVal);
+  document.getElementById('dsTlComp').textContent = fmt(compVal);
+  document.getElementById('dsTlDefer').textContent = fmt(defVal);
+  document.getElementById('dsTlEarn').textContent = fmt(earnVal);
+}
+
+/* ========== FIX COST CALCULATOR ========== */
+function updateFixCosts(){
+  const costs = document.querySelectorAll('.fix-cost');
+  const savings = document.querySelectorAll('.fix-saving');
+  const paybacks = document.querySelectorAll('.fix-payback');
+  let totalCost = 0, totalSaving = 0;
+
+  costs.forEach((c,i)=>{
+    const cost = parseFloat(c.value) || 0;
+    const saving = parseFloat(savings[i].value) || 0;
+    const pb = saving > 0 ? (cost / saving) : 0;
+    paybacks[i].textContent = pb.toFixed(pb < 0.1 && pb > 0 ? 2 : 1);
+    totalCost += cost;
+    totalSaving += saving;
+  });
+
+  const avgPb = totalSaving > 0 ? (totalCost / totalSaving) : 0;
+  const fmt = v => '\u00A3'+Math.round(v).toLocaleString();
+  document.getElementById('fixTotalCost').textContent = fmt(totalCost);
+  document.getElementById('fixTotalSaving').textContent = fmt(totalSaving);
+  document.getElementById('fixAvgPayback').textContent = avgPb.toFixed(1)+' yrs';
+  document.getElementById('fixRoiCost').textContent = fmt(totalCost);
+  document.getElementById('fixRoiSaving').textContent = fmt(totalSaving);
+  document.getElementById('fixRoiPayback').textContent = avgPb.toFixed(1)+' years';
+}
+
+/* ========== DD QUESTIONS ========== */
+function updateQProgress(){
+  const checks = document.querySelectorAll('#questionsList input[type=checkbox]');
+  const done = [...checks].filter(c=>c.checked).length;
+  const total = checks.length;
+  const pct = Math.round((done/total)*100);
+  document.getElementById('qProgressFill').style.width = pct+'%';
+  document.getElementById('qProgressText').textContent = done+' of '+total+' answered';
+  document.getElementById('qProgressFill').style.background = pct === 100 ? 'var(--green)' : pct > 50 ? 'var(--orange)' : 'var(--gold)';
+}
+
+function getQuestionTexts(unansweredOnly){
+  const items = document.querySelectorAll('#questionsList .q-item');
+  const lines = [];
+  items.forEach((item, i) => {
+    const cb = item.querySelector('input[type=checkbox]');
+    if(unansweredOnly && cb.checked) return;
+    const label = item.querySelector('label').textContent;
+    lines.push((i+1)+'. '+label);
+  });
+  return 'CEDAR HOPE - DUE DILIGENCE QUESTIONS\n'+('='.repeat(44))+'\n\n'+lines.join('\n\n');
+}
+
+function copyQuestions(){
+  navigator.clipboard.writeText(getQuestionTexts(false)).then(()=>showCopyFeedback('All 13 questions copied to clipboard'));
+}
+
+function copyUnanswered(){
+  const text = getQuestionTexts(true);
+  navigator.clipboard.writeText(text).then(()=>showCopyFeedback('Unanswered questions copied to clipboard'));
+}
+
+function showCopyFeedback(msg){
+  const el = document.getElementById('copyFeedback');
+  el.textContent = msg;
+  el.style.opacity = '1';
+  setTimeout(()=>{ el.style.opacity = '0'; }, 2500);
+}
+
+/* ========== INIT ========== */
+updateValuation();
+updateDealStructure();
+updateFixCosts();
+</script>
+
+</body>
+</html>
