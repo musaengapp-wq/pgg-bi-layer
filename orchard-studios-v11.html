@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orchard Studios — Opportunity Review V11 | Pillar Governance Group</title>
+<style>
+/* ── Reset & Variables ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1a1a3e;--navy-light:#252560;--navy-dark:#12122e;
+  --gold:#c9a84c;--gold-light:#e0c876;--gold-dark:#a88a35;
+  --bg:#f5f5f8;--card:#ffffff;--text:#2c3040;--text-light:#6b7080;
+  --border:#dfe2e8;--green:#27ae60;--red:#c0392b;--orange:#e67e22;--blue:#2980b9;
+}
+@page{size:A4;margin:18mm 14mm}
+@media print{
+  body{background:#fff;font-size:10pt}
+  .no-print{display:none!important}
+  .page-break{page-break-before:always}
+  section{break-inside:avoid}
+  .toc a{color:var(--navy)!important}
+}
+body{font-family:'Segoe UI',Roboto,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15px}
+a{color:var(--navy);text-decoration:none}
+
+/* ── Layout ── */
+.report{max-width:1060px;margin:0 auto;padding:24px}
+
+/* ── Cover ── */
+.cover{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);color:#fff;border-radius:16px;padding:64px 56px;margin-bottom:32px;position:relative;overflow:hidden}
+.cover::after{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 70%);border-radius:50%}
+.cover-badge{display:inline-block;background:rgba(201,168,76,.18);color:var(--gold);padding:6px 18px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;border:1px solid rgba(201,168,76,.3)}
+.cover h1{font-size:38px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.cover h1 span{color:var(--gold)}
+.cover .subtitle{font-size:18px;color:rgba(255,255,255,.7);margin-bottom:32px;max-width:600px}
+.cover-meta{display:flex;gap:40px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.55)}
+.cover-meta div strong{color:var(--gold);display:block;margin-bottom:3px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.cover-meta div span{color:rgba(255,255,255,.85);font-size:15px}
+
+/* ── Disclaimer ── */
+.disclaimer{background:#fff3cd;border:1px solid #f0dca0;border-radius:10px;padding:18px 24px;margin-bottom:28px;font-size:13px;color:#856404;line-height:1.55}
+.disclaimer strong{color:#6d4c00}
+
+/* ── TOC ── */
+.toc{background:var(--card);border-radius:14px;padding:32px 40px;margin-bottom:28px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.toc h2{font-size:20px;color:var(--navy);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--gold)}
+.toc ol{counter-reset:toc;list-style:none;columns:2;column-gap:40px}
+.toc li{counter-increment:toc;padding:6px 0;font-size:14px;break-inside:avoid}
+.toc li::before{content:counter(toc) ".";color:var(--gold);font-weight:700;margin-right:8px;min-width:24px;display:inline-block}
+.toc a:hover{color:var(--gold)}
+
+/* ── Sections ── */
+section{background:var(--card);border-radius:14px;padding:36px 40px;margin-bottom:24px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+section h2{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+section h2::before{content:'';width:4px;height:24px;background:var(--gold);border-radius:2px;flex-shrink:0}
+section .section-num{color:var(--gold);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+section h3{font-size:17px;font-weight:700;color:var(--navy-light);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+section h4{font-size:15px;font-weight:700;color:var(--text);margin:16px 0 8px}
+p{margin-bottom:12px}
+ul,ol{margin:0 0 14px 22px}
+li{margin-bottom:5px}
+
+/* ── Tables ── */
+table{width:100%;border-collapse:collapse;margin:16px 0 20px;font-size:13.5px}
+thead th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+thead th:first-child{border-radius:8px 0 0 0}
+thead th:last-child{border-radius:0 8px 0 0}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:hover td{background:rgba(26,26,62,.02)}
+tbody tr:last-child td:first-child{border-radius:0 0 0 8px}
+tbody tr:last-child td:last-child{border-radius:0 0 8px 0}
+.total-row td{font-weight:700;background:rgba(201,168,76,.06);border-top:2px solid var(--gold)}
+.highlight-row td{background:rgba(39,174,96,.05)}
+.loss-row td{background:rgba(192,57,43,.05);color:var(--red)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.pos{color:var(--green);font-weight:600}
+td.neg{color:var(--red);font-weight:600}
+
+/* ── Callouts ── */
+.callout{border-radius:10px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.55}
+.callout-gold{background:rgba(201,168,76,.08);border-left:4px solid var(--gold);color:#5a4a1e}
+.callout-blue{background:rgba(41,128,185,.06);border-left:4px solid var(--blue);color:#1a4a6e}
+.callout-red{background:rgba(192,57,43,.06);border-left:4px solid var(--red);color:#6e1a1a}
+.callout-green{background:rgba(39,174,96,.06);border-left:4px solid var(--green);color:#1a5a2e}
+.callout strong{display:block;margin-bottom:4px}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:#e8f8f0;color:#27ae60}
+.badge-red{background:#fde8e8;color:#c0392b}
+.badge-gold{background:rgba(201,168,76,.15);color:#8a7030}
+.badge-blue{background:#e8f0fe;color:#2980b9}
+
+/* ── KPI cards ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin:18px 0 24px}
+.kpi{text-align:center;background:var(--bg);border-radius:10px;padding:20px 16px;border:1px solid var(--border)}
+.kpi-value{font-size:30px;font-weight:800;color:var(--navy)}
+.kpi-label{font-size:12px;color:var(--text-light);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+.kpi-value.gold{color:var(--gold)}
+.kpi-value.green{color:var(--green)}
+.kpi-value.red{color:var(--red)}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:28px;margin:16px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;background:linear-gradient(180deg,var(--gold),var(--navy))}
+.tl-item{position:relative;margin-bottom:18px;padding-left:20px}
+.tl-item::before{content:'';position:absolute;left:-24px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--gold)}
+.tl-item h4{margin:0 0 3px;font-size:14px}
+.tl-item p{margin:0;font-size:13px;color:var(--text-light)}
+
+/* ── Risk matrix ── */
+.risk-matrix{display:grid;grid-template-columns:auto repeat(3,1fr);gap:2px;margin:16px 0;font-size:12px}
+.risk-matrix .axis-label{font-weight:700;display:flex;align-items:center;justify-content:center;padding:10px;color:var(--text-light)}
+.risk-matrix .cell{padding:10px;text-align:center;border-radius:4px;font-weight:600}
+.cell-green{background:#d4edda;color:#155724}
+.cell-amber{background:#fff3cd;color:#856404}
+.cell-red{background:#f8d7da;color:#721c24}
+
+/* ── Two-column ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}.toc ol{columns:1}.cover{padding:40px 28px}.cover h1{font-size:28px}section{padding:24px 20px}}
+
+/* ── Footer ── */
+.report-footer{text-align:center;padding:32px 0 48px;font-size:12px;color:var(--text-light)}
+.report-footer .brand{color:var(--gold);font-weight:700;letter-spacing:1px}
+
+/* ── Source tags ── */
+.source{font-size:11px;color:var(--text-light);font-style:italic;margin-top:6px}
+.source::before{content:'Source: '}
+
+/* ── Comparison boxes ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+.compare-box{border-radius:10px;padding:20px;border:1px solid var(--border)}
+.compare-box h4{margin:0 0 10px;font-size:15px}
+.compare-box.recommended{border-color:var(--gold);background:rgba(201,168,76,.03)}
+</style>
+</head>
+<body>
+<div class="report">
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <div class="cover-badge">Confidential — Opportunity Review</div>
+  <h1>Orchard Studios<br><span>Independent Opportunity Analysis</span></h1>
+  <p class="subtitle">14-unit C2 licensed residential development, Orchard Lane, Sheffield S1. Multi-scenario financial analysis with market context and regulatory pathway.</p>
+  <div class="cover-meta">
+    <div><strong>Version</strong><span>V11 — Revised</span></div>
+    <div><strong>Date</strong><span>16 March 2026</span></div>
+    <div><strong>Classification</strong><span>Commercial in Confidence</span></div>
+    <div><strong>Asset Type</strong><span>C2 Residential — 14 Studios</span></div>
+    <div><strong>Location</strong><span>Sheffield S1 (City Centre)</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════ DISCLAIMER ═══════════════ -->
+<div class="disclaimer">
+  <strong>Important: Modelling Disclaimer</strong>
+  All financial projections in this document are indicative models based on publicly available data, market comparables, and stated assumptions. They do not constitute financial advice and should not be treated as guaranteed outcomes. Actual results will vary based on occupancy rates, commissioning decisions, staffing costs, regulatory timelines, and market conditions. Independent financial, legal, and regulatory advice should be obtained before any investment decision. All projections should be stress-tested against local authority commissioning realities.
+</div>
+
+<!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">Executive Summary</a></li>
+    <li><a href="#s2">Asset Overview</a></li>
+    <li><a href="#s3">Planning &amp; Regulatory Status</a></li>
+    <li><a href="#s4">Market Context</a></li>
+    <li><a href="#s5">Scenario A: Residential Family Assessment Centre</a></li>
+    <li><a href="#s6">Scenario B: Mother &amp; Baby Supported Living</a></li>
+    <li><a href="#s7">Scenario C: Supported Living (MH / Complex Needs)</a></li>
+    <li><a href="#s8">Scenario D: Standard Exempt Accommodation</a></li>
+    <li><a href="#s9">Staffing Models</a></li>
+    <li><a href="#s10">Detailed Cash Flow — Year 1</a></li>
+    <li><a href="#s11">Lease Negotiation Strategy</a></li>
+    <li><a href="#s12">Regulatory Requirements &amp; Entity Structure</a></li>
+    <li><a href="#s13">Risk Assessment</a></li>
+    <li><a href="#s14">Competitor Landscape</a></li>
+    <li><a href="#s15">Cost of Non-Compliance</a></li>
+    <li><a href="#s16">Implementation Timeline</a></li>
+    <li><a href="#s17">Recommendation &amp; Next Steps</a></li>
+    <li><a href="#s18">Appendix: Key Data Sources</a></li>
+  </ol>
+</div>
+
+
+<!-- ═══════════════ 1. EXECUTIVE SUMMARY ═══════════════ -->
+<section id="s1">
+  <div class="section-num">Section 1</div>
+  <h2>Executive Summary</h2>
+
+  <p>Orchard Studios is a 14-unit C2 licensed new-build development on Orchard Lane, Sheffield S1, within the Furnace Hill Conservation Area. The building has full C2 residential institution planning consent (Ref: 24/03723/CHU, granted 28 March 2025) with zero public objections recorded during consultation.</p>
+
+  <p>This report analyses four operational scenarios for the asset, ranging from high-value court-directed residential family assessment to baseline exempt accommodation. The analysis identifies a significant viability gap between specialist commissioned services and standard housing benefit models.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-value gold">14</div><div class="kpi-label">Studio Units</div></div>
+    <div class="kpi"><div class="kpi-value">C2</div><div class="kpi-label">Use Class</div></div>
+    <div class="kpi"><div class="kpi-value green">£115k</div><div class="kpi-label">Best Case Monthly Surplus</div></div>
+    <div class="kpi"><div class="kpi-value red">-£39k</div><div class="kpi-label">Worst Case Monthly Deficit</div></div>
+  </div>
+
+  <div class="callout callout-gold">
+    <strong>Key Finding</strong>
+    The asset is only financially viable as a specialist provision (Scenarios A or B). Standard exempt accommodation (Scenario D) produces a monthly deficit of approximately £6,000–9,000. The highest-value use — a court-directed Residential Family Assessment Centre — could generate a monthly surplus of £62,000–£115,000, but requires Ofsted registration, specialist staffing, and local authority commissioning relationships. The operator must weigh returns against regulatory complexity and lead times.
+  </div>
+
+  <h3>Scenario Summary</h3>
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Weekly Rate</th><th class="num">Monthly Income (80% Occ.)</th><th class="num">Monthly Costs</th><th class="num">Monthly Surplus / (Deficit)</th><th>Viability</th></tr>
+    </thead>
+    <tbody>
+      <tr class="highlight-row"><td><strong>A: Residential Family Assessment</strong></td><td>£3,000–5,000/wk</td><td class="num">£143,000–238,000</td><td class="num">£52,334</td><td class="pos">£90,666–185,666</td><td><span class="badge badge-green">Strong</span></td></tr>
+      <tr><td><strong>B: M&B Supported Living</strong></td><td>£800–1,200/wk</td><td class="num">£38,720–58,080</td><td class="num">£38,900</td><td class="num">-£180 to +£19,180</td><td><span class="badge badge-gold">Marginal</span></td></tr>
+      <tr><td><strong>C: Supported Living (MH)</strong></td><td>£600–1,000/wk</td><td class="num">£29,040–48,400</td><td class="num">£33,500</td><td class="num">-£4,460 to +£14,900</td><td><span class="badge badge-gold">Conditional</span></td></tr>
+      <tr class="loss-row"><td><strong>D: Standard Exempt</strong></td><td>£287/wk avg</td><td class="num">£14,924</td><td class="num">£21,200</td><td class="neg">-£6,276</td><td><span class="badge badge-red">Unviable</span></td></tr>
+    </tbody>
+  </table>
+  <p class="source">Income at 80% occupancy (11.2 units). Costs vary by scenario staffing model. Full breakdowns in Sections 5–8.</p>
+</section>
+
+
+<!-- ═══════════════ 2. ASSET OVERVIEW ═══════════════ -->
+<section id="s2" class="page-break">
+  <div class="section-num">Section 2</div>
+  <h2>Asset Overview</h2>
+
+  <div class="two-col">
+    <div>
+      <h3>Property Details</h3>
+      <table>
+        <tbody>
+          <tr><td><strong>Address</strong></td><td>Orchard Studios, Orchard Lane, Sheffield S1</td></tr>
+          <tr><td><strong>Unit Count</strong></td><td>14 self-contained studio apartments</td></tr>
+          <tr><td><strong>Use Class</strong></td><td>C2 — Residential Institution</td></tr>
+          <tr><td><strong>Planning Ref (Change of Use)</strong></td><td>24/03723/CHU — Granted 28 March 2025</td></tr>
+          <tr><td><strong>Original Build Consent</strong></td><td>20/04327/FUL — Granted 18 May 2022</td></tr>
+          <tr><td><strong>Conservation Area</strong></td><td>Furnace Hill Conservation Area</td></tr>
+          <tr><td><strong>Public Objections</strong></td><td>Zero (0) objections during consultation</td></tr>
+          <tr><td><strong>Planning Conditions</strong></td><td>27 conditions attached to consent</td></tr>
+          <tr><td><strong>Construction Status</strong></td><td>Complete — currently unoccupied</td></tr>
+          <tr><td><strong>Current Income</strong></td><td>£0 — zero tenants, zero revenue</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Key Features</h3>
+      <ul>
+        <li>New-build construction to modern Building Regulations standards</li>
+        <li>Self-contained studios with individual kitchen and bathroom facilities</li>
+        <li>City centre location with proximity to Sheffield transport links</li>
+        <li>C2 use class permits residential care, nursing, and supported accommodation</li>
+        <li>Conservation area location adds heritage value but imposes exterior design constraints</li>
+        <li>Developer-built with no conversion costs required</li>
+        <li>Suitable for family accommodation with assessment space potential</li>
+      </ul>
+
+      <div class="callout callout-blue">
+        <strong>Developer Position</strong>
+        The building is complete and unoccupied, generating zero income for the developer. This creates significant negotiating leverage for any prospective operator (see Section 11: Lease Negotiation Strategy).
+      </div>
+    </div>
+  </div>
+
+  <h3>C2 Use Class — What It Permits</h3>
+  <p>C2 (Residential Institution) use class under the Town and Country Planning (Use Classes) Order 1987 (as amended) covers:</p>
+  <ul>
+    <li><strong>Residential care homes</strong> — providing personal care for people in need of care (other than a hospital or nursing home)</li>
+    <li><strong>Hospitals and nursing homes</strong> — providing medical or psychiatric care</li>
+    <li><strong>Residential schools, colleges or training centres</strong></li>
+    <li><strong>Residential family assessment centres</strong> — court-directed assessment of parenting capacity</li>
+  </ul>
+  <p>C2 consent is a significant asset. It permits the full range of specialist residential services without requiring further planning applications for change of use within the class. This gives the operator maximum flexibility to pivot between models as market conditions evolve.</p>
+</section>
+
+
+<!-- ═══════════════ 3. PLANNING & REGULATORY STATUS ═══════════════ -->
+<section id="s3" class="page-break">
+  <div class="section-num">Section 3</div>
+  <h2>Planning &amp; Regulatory Status</h2>
+
+  <h3>Planning History</h3>
+  <table>
+    <thead><tr><th>Ref</th><th>Description</th><th>Decision</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>20/04327/FUL</td><td>Original full planning application — new-build residential development</td><td><span class="badge badge-green">Granted</span></td><td>18 May 2022</td></tr>
+      <tr><td>24/03723/CHU</td><td>Change of use from C3 (dwelling) to C2 (residential institution) — 14 studio apartments described as "family support unit"</td><td><span class="badge badge-green">Granted</span></td><td>28 March 2025</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Key Planning Details — 24/03723/CHU</h3>
+  <ul>
+    <li><strong>Consultation outcome:</strong> Zero (0) public objections received during statutory consultation period</li>
+    <li><strong>Planning conditions:</strong> 27 conditions attached to the consent (standard for conservation area developments)</li>
+    <li><strong>Conservation area:</strong> Furnace Hill Conservation Area — imposes requirements around external appearance, materials, and signage but does not restrict internal use</li>
+    <li><strong>Description on application:</strong> "Family support unit" — this language aligns with Scenario A (Residential Family Assessment Centre)</li>
+    <li><strong>Decision route:</strong> Delegated decision (not referred to committee), indicating officer support</li>
+  </ul>
+
+  <h3>27 Planning Conditions — Overview</h3>
+  <p>The 27 conditions are typical for a conservation area C2 consent. They will include (subject to confirmation from the planning portal):</p>
+  <ul>
+    <li>Standard time limits for commencement</li>
+    <li>Approved plans compliance</li>
+    <li>Materials samples for external finishes (conservation area requirement)</li>
+    <li>Landscaping and boundary treatment details</li>
+    <li>Waste management and bin storage arrangements</li>
+    <li>Cycle storage provision</li>
+    <li>Construction management plan (likely already discharged if building is complete)</li>
+    <li>Hours of operation/delivery restrictions</li>
+    <li>Drainage and flood risk compliance (SuDS)</li>
+    <li>Biodiversity net gain requirements</li>
+    <li>Noise insulation standards</li>
+    <li>Any Section 106 obligations</li>
+  </ul>
+  <div class="callout callout-gold">
+    <strong>Action Required</strong>
+    An operator should obtain full condition discharge records from Sheffield City Council to confirm which conditions remain outstanding. Any pre-occupation conditions must be discharged before residents move in. Budget £2,000–£5,000 for condition discharge applications and professional fees.
+  </div>
+
+  <h3>Regulatory Registrations Required by Scenario</h3>
+  <table>
+    <thead><tr><th>Scenario</th><th>Regulator</th><th>Registration Type</th><th>Estimated Timeline</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>A: Residential Family Assessment</td><td>Ofsted</td><td>Residential Family Centre</td><td>3–6 months</td><td>£2,200–£3,000</td></tr>
+      <tr><td>B: M&B Supported Living</td><td>CQC (if personal care)</td><td>Regulated Activity — Personal Care</td><td>3–6 months</td><td>£3,000–£5,000</td></tr>
+      <tr><td>C: Supported Living (MH)</td><td>CQC (if personal care)</td><td>Regulated Activity — Personal Care</td><td>3–6 months</td><td>£3,000–£5,000</td></tr>
+      <tr><td>D: Standard Exempt</td><td>None (below threshold)</td><td>Housing Benefit exempt claim only</td><td>N/A</td><td>N/A</td></tr>
+    </tbody>
+  </table>
+  <p class="source">Ofsted fees per Ofsted fee schedule 2025/26. CQC fees per CQC fee scheme 2025/26.</p>
+</section>
+
+
+<!-- ═══════════════ 4. MARKET CONTEXT ═══════════════ -->
+<section id="s4" class="page-break">
+  <div class="section-num">Section 4</div>
+  <h2>Market Context</h2>
+
+  <h3>Sheffield Exempt Accommodation Market</h3>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-value gold">£42M</div><div class="kpi-label">Annual HB Spend (Exempt)</div></div>
+    <div class="kpi"><div class="kpi-value">£135M</div><div class="kpi-label">5-Year Cumulative</div></div>
+    <div class="kpi"><div class="kpi-value">3,995</div><div class="kpi-label">Active Claims</div></div>
+    <div class="kpi"><div class="kpi-value">81</div><div class="kpi-label">Registered Providers</div></div>
+    <div class="kpi"><div class="kpi-value">£287</div><div class="kpi-label">Avg Weekly Claim</div></div>
+  </div>
+
+  <p>Sheffield's exempt accommodation market is one of the largest in England by expenditure. Greenbridge, the single largest provider, accounts for over £9M annually (£25M+ cumulative over the period), demonstrating significant market concentration. The average weekly claim of £287 across all providers serves as a baseline for Scenario D modelling.</p>
+  <p class="source">Sheffield City Council Housing Benefit data (FOI), LGA exempt accommodation audit 2024/25.</p>
+
+  <h3>Local Housing Allowance (LHA) Rates — Sheffield</h3>
+  <table>
+    <thead><tr><th>Property Size</th><th>Monthly LHA</th><th>Weekly Equivalent</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Shared Accommodation Rate (SAR)</td><td>£350</td><td>£81</td><td>Under-35s, single rooms</td></tr>
+      <tr><td>1-bed self-contained</td><td>£575</td><td>£133</td><td>Applicable to studio units</td></tr>
+      <tr><td>2-bed</td><td>£650</td><td>£150</td><td>For reference</td></tr>
+    </tbody>
+  </table>
+  <p>At LHA rates (£575/month per 1-bed), total monthly income across 14 units would be only £8,050 — approximately 15% of the costs for an M&B staffing model. This confirms that LHA alone cannot support any care-focused service in this building.</p>
+  <p class="source">Valuation Office Agency, LHA rates for Sheffield BRMA, effective April 2025.</p>
+
+  <h3>Supported Housing (Regulation) Act 2023</h3>
+  <div class="callout callout-blue">
+    <strong>Legislative Update — March 2026</strong>
+    The Supported Housing (Regulation) Act received Royal Assent in August 2023. However, Homeless Link confirms that enforcement provisions <strong>will not come into force before 2027</strong>. Secondary legislation is still required to define licensing standards, enforcement powers, and local authority inspection frameworks. The House of Commons Library updated its briefing in January 2026 confirming no implementation date has been set. The LGA's consultation response emphasises that multi-year transitional funding is required before enforcement can begin.
+  </div>
+  <p><strong>Implications for this asset:</strong> There is a window of 12–18+ months before regulatory enforcement changes the operating environment. However, any operator should build to the anticipated standards now, as:</p>
+  <ul>
+    <li>Early compliance creates a competitive advantage when licensing begins</li>
+    <li>Local authorities are already informally applying quality thresholds to new exempt claims</li>
+    <li>Sheffield has been identified as a pilot area for enhanced scrutiny</li>
+  </ul>
+
+  <h3>Sheffield Enhanced Care Framework &amp; £15M Tender</h3>
+  <table>
+    <thead><tr><th>Procurement</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Enhanced Care Framework</strong></td><td>8-year contract. Market engagement deadline: 26 March 2026</td></tr>
+      <tr><td><strong>£15M Alliance Contract</strong></td><td>Published June 2026. Contract start: April 2027. Duration: 6 years (alliance model)</td></tr>
+      <tr><td><strong>Scope</strong></td><td>Supported accommodation, complex needs, mental health, young people leaving care</td></tr>
+      <tr><td><strong>Alliance Model</strong></td><td>Multiple providers work collaboratively under a single contract, sharing referrals</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-gold">
+    <strong>Strategic Implication</strong>
+    The Enhanced Care Framework market engagement deadline (26 March 2026) is 10 days from the date of this report. If an operator intends to participate in the alliance contract beginning April 2027, expressions of interest or market engagement responses should be submitted immediately. The £15M alliance model represents the single largest commissioning opportunity in Sheffield's supported housing sector.
+  </div>
+
+  <h3>National M&B Residential Assessment Market</h3>
+  <p>There is a well-documented national shortage of residential family assessment centre places. Key data points:</p>
+  <ul>
+    <li>Courts frequently cannot find placements for court-directed residential assessments within reasonable timeframes</li>
+    <li>Local authorities report "significant difficulty" sourcing residential M&B placements in Yorkshire and the North East</li>
+    <li>The Independent Review of Children's Social Care (Josh MacAlister, 2022) called for increased capacity</li>
+    <li>Foster care alternatives cost approximately £750/week — but courts prefer residential assessment where risk is assessed as high, creating inelastic demand for Scenario A provision</li>
+    <li>Weekly rates for residential family assessment range from £3,000 to £5,000, with some specialist placements reaching £60,000 for a full 12-week assessment period (£5,000/week)</li>
+  </ul>
+  <p class="source">Simply Fostering market data, LGA placement sufficiency report, Independent Review of Children's Social Care (2022).</p>
+</section>
+
+
+<!-- ═══════════════ 5. SCENARIO A ═══════════════ -->
+<section id="s5" class="page-break">
+  <div class="section-num">Section 5</div>
+  <h2>Scenario A: Residential Family Assessment Centre</h2>
+
+  <div class="callout callout-green">
+    <strong>Highest Value Use — Court-Directed Placements</strong>
+    This scenario utilises the C2 consent as originally described in the planning application ("family support unit"). Residential family assessment centres provide court-directed 12-week assessment placements for families where parenting capacity is under evaluation. This is the highest-revenue scenario but also the most complex to establish.
+  </div>
+
+  <h3>Service Model</h3>
+  <ul>
+    <li><strong>Client group:</strong> Families (typically mother and child/children) referred by courts under s.38(6) Children Act 1989</li>
+    <li><strong>Placement type:</strong> 12-week standard assessment period, 24/7 supervised environment</li>
+    <li><strong>Staffing ratio:</strong> High — approaching 1:1 during assessment periods</li>
+    <li><strong>Regulator:</strong> Ofsted — Residential Family Centre registration</li>
+    <li><strong>Commissioners:</strong> Local authority children's services (court-directed, not discretionary)</li>
+    <li><strong>Referral mechanism:</strong> Court orders — once capacity is known, referrals come through care proceedings</li>
+  </ul>
+
+  <h3>Revenue Model</h3>
+  <table>
+    <thead><tr><th>Parameter</th><th>Conservative</th><th>Mid-Range</th><th>Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly rate per family</td><td class="num">£3,000</td><td class="num">£3,500</td><td class="num">£5,000</td></tr>
+      <tr><td>Capacity (families)</td><td class="num">14</td><td class="num">14</td><td class="num">14</td></tr>
+      <tr><td>Occupancy assumption</td><td class="num">70%</td><td class="num">80%</td><td class="num">85%</td></tr>
+      <tr><td>Occupied units</td><td class="num">9.8</td><td class="num">11.2</td><td class="num">11.9</td></tr>
+      <tr class="total-row"><td><strong>Monthly income</strong></td><td class="num pos">£127,400</td><td class="num pos">£169,867</td><td class="num pos">£257,833</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cost Model — Full Staffing (M&B/Assessment)</h3>
+  <table>
+    <thead><tr><th>Role</th><th>Headcount</th><th>Annual Salary</th><th class="num">Monthly Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Registered Manager</td><td>1</td><td>£45,000</td><td class="num">£3,750</td></tr>
+      <tr><td>Deputy Manager</td><td>1</td><td>£32,000</td><td class="num">£2,667</td></tr>
+      <tr><td>Senior Support Workers</td><td>4</td><td>£27,000 each</td><td class="num">£9,000</td></tr>
+      <tr><td>Support Workers (24/7 rota)</td><td>8–10</td><td>£22,000–25,000 each</td><td class="num">£16,667</td></tr>
+      <tr><td>Waking Night Staff</td><td>2–3</td><td>£24,000 each</td><td class="num">£5,000</td></tr>
+      <tr><td>Administrator</td><td>1</td><td>£23,000</td><td class="num">£1,917</td></tr>
+      <tr class="total-row"><td><strong>Total Staff Costs</strong></td><td><strong>17–20</strong></td><td></td><td class="num"><strong>£39,001–52,334</strong></td></tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead><tr><th>Non-Staff Costs</th><th class="num">Monthly</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Lease (14 × £750)</td><td class="num">£10,500</td><td>Developer quoted rate — see Section 11 for negotiation strategy</td></tr>
+      <tr><td>Insurance (PI + PL + Employers)</td><td class="num">£333</td><td>~£4,000/year</td></tr>
+      <tr><td>Utilities &amp; maintenance</td><td class="num">£1,500</td><td>Estimate — new-build should be energy efficient</td></tr>
+      <tr><td>Training budget</td><td class="num">£1,000</td><td>£12,000/year — Ofsted CPD requirements</td></tr>
+      <tr><td>Assessment tools &amp; materials</td><td class="num">£500</td><td>Parenting assessment tools, observation recording</td></tr>
+      <tr><td>Professional fees (social worker consultancy)</td><td class="num">£2,000</td><td>Qualified social worker input for assessments</td></tr>
+      <tr class="total-row"><td><strong>Total Non-Staff</strong></td><td class="num"><strong>£15,833</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Profit &amp; Loss Summary — Scenario A</h3>
+  <table>
+    <thead><tr><th></th><th class="num">Conservative</th><th class="num">Mid-Range</th><th class="num">Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly Income</td><td class="num">£127,400</td><td class="num">£169,867</td><td class="num">£257,833</td></tr>
+      <tr><td>Staff Costs (full model)</td><td class="num">£52,334</td><td class="num">£52,334</td><td class="num">£52,334</td></tr>
+      <tr><td>Non-Staff Costs</td><td class="num">£15,833</td><td class="num">£15,833</td><td class="num">£15,833</td></tr>
+      <tr class="total-row"><td><strong>Monthly Surplus</strong></td><td class="num pos"><strong>£59,233</strong></td><td class="num pos"><strong>£101,700</strong></td><td class="num pos"><strong>£189,666</strong></td></tr>
+      <tr><td><strong>Annual Surplus</strong></td><td class="num pos"><strong>£710,796</strong></td><td class="num pos"><strong>£1,220,400</strong></td><td class="num pos"><strong>£2,275,992</strong></td></tr>
+      <tr><td>Operating Margin</td><td class="num">46%</td><td class="num">60%</td><td class="num">74%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-red">
+    <strong>Assumption Warning</strong>
+    These margins assume consistent occupancy and full commissioning. In practice: (1) 12-week placement cycles create regular voids between families; (2) court timelines are unpredictable — referrals cluster around term times; (3) Ofsted registration must be achieved before any placements; (4) building a referral pipeline from local authority children's services takes 6–12 months. The conservative estimate is the most realistic starting point.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 6. SCENARIO B ═══════════════ -->
+<section id="s6" class="page-break">
+  <div class="section-num">Section 6</div>
+  <h2>Scenario B: Mother &amp; Baby Supported Living</h2>
+
+  <div class="callout callout-blue">
+    <strong>Different Service, Different Registration</strong>
+    This scenario is frequently conflated with Scenario A but operates under an entirely different model. M&amp;B supported living provides longer-term accommodation (6–24 months) for mothers and babies who need support but are not under court-directed assessment. Rates are significantly lower, and registration requirements differ.
+  </div>
+
+  <h3>Key Differences from Scenario A</h3>
+  <table>
+    <thead><tr><th>Factor</th><th>Scenario A (Assessment)</th><th>Scenario B (Supported Living)</th></tr></thead>
+    <tbody>
+      <tr><td>Purpose</td><td>Court-directed parenting assessment</td><td>Longer-term support and independent living skills</td></tr>
+      <tr><td>Duration</td><td>12 weeks (fixed)</td><td>6–24 months</td></tr>
+      <tr><td>Weekly rate</td><td>£3,000–5,000</td><td>£800–1,200</td></tr>
+      <tr><td>Commissioner</td><td>Children's services (via court)</td><td>Housing/adult services, sometimes children's services</td></tr>
+      <tr><td>Regulator</td><td>Ofsted</td><td>CQC (if personal care provided) or none</td></tr>
+      <tr><td>Staffing intensity</td><td>Near 1:1</td><td>Lower — 1:3 to 1:5</td></tr>
+      <tr><td>Occupancy stability</td><td>Volatile (12-week cycles)</td><td>Stable (long-term tenancies)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Revenue Model</h3>
+  <table>
+    <thead><tr><th>Parameter</th><th>Conservative</th><th>Mid-Range</th><th>Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly rate per unit</td><td class="num">£800</td><td class="num">£1,000</td><td class="num">£1,200</td></tr>
+      <tr><td>Occupancy</td><td class="num">80%</td><td class="num">85%</td><td class="num">90%</td></tr>
+      <tr><td>Occupied units</td><td class="num">11.2</td><td class="num">11.9</td><td class="num">12.6</td></tr>
+      <tr class="total-row"><td><strong>Monthly income</strong></td><td class="num">£38,827</td><td class="num">£51,567</td><td class="num">£65,520</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cost Model — Lean M&B Staffing</h3>
+  <table>
+    <thead><tr><th>Role</th><th>Headcount</th><th>Annual Salary</th><th class="num">Monthly Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Service Manager</td><td>1</td><td>£38,000</td><td class="num">£3,167</td></tr>
+      <tr><td>Senior Support Workers</td><td>2</td><td>£27,000 each</td><td class="num">£4,500</td></tr>
+      <tr><td>Support Workers (daytime rota)</td><td>4</td><td>£23,000 each</td><td class="num">£7,667</td></tr>
+      <tr><td>Night Support (sleep-in)</td><td>2</td><td>£22,000 each</td><td class="num">£3,667</td></tr>
+      <tr><td>Administrator (part-time)</td><td>0.5</td><td>£23,000 pro rata</td><td class="num">£958</td></tr>
+      <tr class="total-row"><td><strong>Total Staff Costs</strong></td><td><strong>9.5</strong></td><td></td><td class="num"><strong>£19,959</strong></td></tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead><tr><th>Non-Staff Costs</th><th class="num">Monthly</th></tr></thead>
+    <tbody>
+      <tr><td>Lease (14 × £750)</td><td class="num">£10,500</td></tr>
+      <tr><td>Insurance</td><td class="num">£333</td></tr>
+      <tr><td>Utilities &amp; maintenance</td><td class="num">£1,500</td></tr>
+      <tr><td>Training</td><td class="num">£600</td></tr>
+      <tr class="total-row"><td><strong>Total Non-Staff</strong></td><td class="num"><strong>£12,933</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>P&amp;L Summary — Scenario B</h3>
+  <table>
+    <thead><tr><th></th><th class="num">Conservative</th><th class="num">Mid-Range</th><th class="num">Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly Income</td><td class="num">£38,827</td><td class="num">£51,567</td><td class="num">£65,520</td></tr>
+      <tr><td>Total Costs</td><td class="num">£32,892</td><td class="num">£32,892</td><td class="num">£32,892</td></tr>
+      <tr class="total-row"><td><strong>Monthly Surplus / (Deficit)</strong></td><td class="num pos"><strong>£5,935</strong></td><td class="num pos"><strong>£18,675</strong></td><td class="num pos"><strong>£32,628</strong></td></tr>
+      <tr><td><strong>Annual Surplus</strong></td><td class="num pos">£71,220</td><td class="num pos">£224,100</td><td class="num pos">£391,536</td></tr>
+      <tr><td>Operating Margin</td><td class="num">15%</td><td class="num">36%</td><td class="num">50%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-gold">
+    <strong>Viability Note</strong>
+    Scenario B is viable at the lean staffing model, but margins are thin at conservative rates. If CQC registration is required (because personal care is provided), the regulatory overhead and staffing requirements increase, potentially pushing the conservative scenario to break-even or a small deficit. The mid-range estimate is the most realistic target for a well-run service.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 7. SCENARIO C ═══════════════ -->
+<section id="s7" class="page-break">
+  <div class="section-num">Section 7</div>
+  <h2>Scenario C: Supported Living — Mental Health / Complex Needs</h2>
+
+  <h3>Service Model</h3>
+  <p>This scenario positions the building as specialist supported living for adults with mental health conditions, learning disabilities, or complex needs. Income derives from a combination of housing benefit (exempt rate), care packages commissioned by the local authority, and potentially NHS continuing healthcare funding.</p>
+
+  <h3>Revenue Model</h3>
+  <table>
+    <thead><tr><th>Income Stream</th><th class="num">Conservative</th><th class="num">Mid-Range</th><th class="num">Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Housing Benefit (exempt rate, avg £287/wk)</td><td class="num">£13,924</td><td class="num">£14,784</td><td class="num">£15,645</td></tr>
+      <tr><td>Care packages (avg £350–700/wk per person)</td><td class="num">£16,940</td><td class="num">£28,600</td><td class="num">£38,220</td></tr>
+      <tr><td>Occupancy assumption</td><td class="num">80%</td><td class="num">85%</td><td class="num">90%</td></tr>
+      <tr class="total-row"><td><strong>Total Monthly Income</strong></td><td class="num pos">£30,864</td><td class="num pos">£43,384</td><td class="num pos">£53,865</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cost Model — Supported Living Staffing</h3>
+  <table>
+    <thead><tr><th>Role</th><th>Headcount</th><th class="num">Monthly Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Service Manager</td><td>1</td><td class="num">£3,167</td></tr>
+      <tr><td>Senior Support Workers</td><td>2</td><td class="num">£4,500</td></tr>
+      <tr><td>Support Workers (24/7 rota)</td><td>6</td><td class="num">£11,500</td></tr>
+      <tr><td>Night Staff (waking/sleep-in)</td><td>2</td><td class="num">£3,667</td></tr>
+      <tr><td>Administrator (part-time)</td><td>0.5</td><td class="num">£958</td></tr>
+      <tr class="total-row"><td><strong>Total Staff</strong></td><td><strong>11.5</strong></td><td class="num"><strong>£23,792</strong></td></tr>
+      <tr><td>Non-staff costs (lease, insurance, utilities, training)</td><td></td><td class="num">£12,933</td></tr>
+      <tr class="total-row"><td><strong>Total Operating Costs</strong></td><td></td><td class="num"><strong>£36,725</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>P&amp;L Summary — Scenario C</h3>
+  <table>
+    <thead><tr><th></th><th class="num">Conservative</th><th class="num">Mid-Range</th><th class="num">Optimistic</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly Income</td><td class="num">£30,864</td><td class="num">£43,384</td><td class="num">£53,865</td></tr>
+      <tr><td>Total Costs</td><td class="num">£36,725</td><td class="num">£36,725</td><td class="num">£36,725</td></tr>
+      <tr class="total-row"><td><strong>Monthly Surplus / (Deficit)</strong></td><td class="num neg"><strong>(£5,861)</strong></td><td class="num pos"><strong>£6,659</strong></td><td class="num pos"><strong>£17,140</strong></td></tr>
+      <tr><td><strong>Annual Surplus / (Deficit)</strong></td><td class="num neg">(£70,332)</td><td class="num pos">£79,908</td><td class="num pos">£205,680</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-gold">
+    <strong>Dependency: Care Packages</strong>
+    Scenario C viability depends entirely on securing local authority care package funding. Without care packages, housing benefit alone generates only £14,000–£16,000/month against £36,725 costs. The operator must have confirmed commissioning relationships or spot-purchase agreements before committing to this model. The Sheffield £15M alliance contract (April 2027) could provide a sustainable funding stream, but requires participation in the procurement process starting now.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 8. SCENARIO D ═══════════════ -->
+<section id="s8" class="page-break">
+  <div class="section-num">Section 8</div>
+  <h2>Scenario D: Standard Exempt Accommodation</h2>
+
+  <div class="callout callout-red">
+    <strong>Baseline Scenario — Included for Completeness</strong>
+    This scenario models the building as standard exempt accommodation with minimal support, relying on housing benefit exempt rates. It demonstrates why the asset does not work as a basic HB-funded operation and why specialist commissioning is essential for viability.
+  </div>
+
+  <h3>Revenue Model</h3>
+  <table>
+    <thead><tr><th>Parameter</th><th class="num">Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly rate (Sheffield avg exempt)</td><td class="num">£287</td><td>Based on Sheffield exempt accommodation data</td></tr>
+      <tr><td>Occupancy</td><td class="num">85%</td><td>Exempt accommodation typically higher occupancy</td></tr>
+      <tr><td>Occupied units</td><td class="num">11.9</td><td></td></tr>
+      <tr class="total-row"><td><strong>Monthly income</strong></td><td class="num">£14,786</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cost Model — Minimal Staffing</h3>
+  <table>
+    <thead><tr><th>Item</th><th class="num">Monthly Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Lease (14 × £750)</td><td class="num">£10,500</td></tr>
+      <tr><td>Housing Manager (1)</td><td class="num">£2,917</td></tr>
+      <tr><td>Support Workers (2 — daytime only)</td><td class="num">£3,833</td></tr>
+      <tr><td>Insurance</td><td class="num">£250</td></tr>
+      <tr><td>Utilities &amp; maintenance</td><td class="num">£1,200</td></tr>
+      <tr><td>Governance &amp; compliance</td><td class="num">£500</td></tr>
+      <tr class="total-row"><td><strong>Total Monthly Costs</strong></td><td class="num"><strong>£19,200</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>P&amp;L Summary — Scenario D</h3>
+  <table>
+    <thead><tr><th></th><th class="num">Value</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly Income</td><td class="num">£14,786</td></tr>
+      <tr><td>Monthly Costs</td><td class="num">£19,200</td></tr>
+      <tr class="total-row"><td><strong>Monthly Deficit</strong></td><td class="num neg"><strong>(£4,414)</strong></td></tr>
+      <tr><td><strong>Annual Deficit</strong></td><td class="num neg"><strong>(£52,968)</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>Even with minimal staffing and standard exempt rates, this building operates at a loss. The lease alone (£10,500/month) consumes 71% of income. Standard exempt accommodation does not generate sufficient revenue to cover costs for a 14-unit C2 building with a £750/unit lease. <strong>This scenario should be rejected unless lease terms can be renegotiated below £300/unit</strong>, which is unrealistic for a new-build city centre development.</p>
+
+  <div class="callout callout-red">
+    <strong>Conclusion: Standard Exempt is Not Viable</strong>
+    At a lease of £750/flat (£10,500/month), standard exempt accommodation at Sheffield average rates (£287/week) cannot cover costs. The building requires specialist commissioned income streams to be financially sustainable. This is the fundamental business case for pursuing Scenario A or B.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 9. STAFFING MODELS ═══════════════ -->
+<section id="s9" class="page-break">
+  <div class="section-num">Section 9</div>
+  <h2>Staffing Models</h2>
+
+  <p>This section provides two complete staffing models: a lean model suitable for supported living (Scenarios B, C) and a full model required for residential family assessment (Scenario A). All salaries are based on Yorkshire market rates for the care sector, cross-referenced against Indeed, Reed, and National Care Forum benchmarks.</p>
+
+  <div class="compare-grid">
+    <div class="compare-box">
+      <h4>Lean Model — 9.5 FTE</h4>
+      <p><strong>Suitable for:</strong> Scenarios B &amp; C</p>
+      <table>
+        <tbody>
+          <tr><td>Service Manager</td><td class="num">£3,167</td></tr>
+          <tr><td>Senior Support Workers ×2</td><td class="num">£4,500</td></tr>
+          <tr><td>Support Workers ×4</td><td class="num">£7,667</td></tr>
+          <tr><td>Night Support ×2 (sleep-in)</td><td class="num">£3,667</td></tr>
+          <tr><td>Admin ×0.5</td><td class="num">£958</td></tr>
+          <tr class="total-row"><td><strong>Total Monthly</strong></td><td class="num"><strong>£19,959</strong></td></tr>
+          <tr><td><strong>Annual Staff Cost</strong></td><td class="num"><strong>£239,508</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-light);margin-top:10px">Daytime cover: 6 staff on site. Night: 2 sleep-in. Weekends: reduced to 4 daytime + 2 night.</p>
+    </div>
+
+    <div class="compare-box recommended">
+      <h4>Full Model — 17–20 FTE <span class="badge badge-gold">Assessment</span></h4>
+      <p><strong>Required for:</strong> Scenario A</p>
+      <table>
+        <tbody>
+          <tr><td>Registered Manager</td><td class="num">£3,750</td></tr>
+          <tr><td>Deputy Manager</td><td class="num">£2,667</td></tr>
+          <tr><td>Senior Support Workers ×4</td><td class="num">£9,000</td></tr>
+          <tr><td>Support Workers ×8–10 (24/7)</td><td class="num">£16,667</td></tr>
+          <tr><td>Waking Night Staff ×2–3</td><td class="num">£5,000</td></tr>
+          <tr><td>Admin ×1</td><td class="num">£1,917</td></tr>
+          <tr class="total-row"><td><strong>Total Monthly</strong></td><td class="num"><strong>£39,001–52,334</strong></td></tr>
+          <tr><td><strong>Annual Staff Cost</strong></td><td class="num"><strong>£468,012–628,008</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-light);margin-top:10px">24/7 cover with waking nights. Near 1:1 ratio during peak assessment hours. Ofsted minimum standards require qualified Registered Manager.</p>
+    </div>
+  </div>
+
+  <h3>Employer On-Costs (Budget Allowance)</h3>
+  <p>The salary figures above are gross. Employers should budget an additional 15–20% for:</p>
+  <table>
+    <thead><tr><th>On-Cost</th><th>Rate</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Employer NI</td><td>13.8% on earnings above threshold</td><td>Threshold £9,100/yr (2025/26)</td></tr>
+      <tr><td>Pension (auto-enrolment)</td><td>3% minimum</td><td>Qualifying earnings</td></tr>
+      <tr><td>Holiday pay</td><td>Included in salary</td><td>5.6 weeks statutory</td></tr>
+      <tr><td>Sick pay, maternity cover</td><td>Variable</td><td>Budget 2–3% contingency</td></tr>
+      <tr><td>DBS checks</td><td>£38 enhanced + barred list</td><td>Per employee</td></tr>
+      <tr><td>Recruitment costs</td><td>£500–1,500 per hire</td><td>Agency fees if used</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-gold">
+    <strong>Note on V10 Discrepancy</strong>
+    The previous version (V10) quoted £28,000/month for 24/7 M&amp;B staffing. This was unrealistically low. The figures in this report (£39,000–52,334/month) are based on the detailed breakdown provided in the operator's own staffing analysis and are consistent with market rates for 17–20 staff in Yorkshire. The £52,334 figure represents the full staffing complement needed for a 14-bed residential family assessment centre operating 24/7 with waking nights.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 10. CASH FLOW ═══════════════ -->
+<section id="s10" class="page-break">
+  <div class="section-num">Section 10</div>
+  <h2>Detailed Cash Flow — Year 1</h2>
+
+  <p>The following month-by-month projections show the cash position for Scenario A (highest value) under both optimistic and realistic timelines. All figures assume the full staffing model (£52,334/month) and developer-quoted lease (£10,500/month).</p>
+
+  <h3>Scenario A — Optimistic Timeline (First Placement Month 6)</h3>
+  <table>
+    <thead>
+      <tr><th>Month</th><th>Activity</th><th class="num">Income</th><th class="num">Costs</th><th class="num">Monthly P&L</th><th class="num">Cumulative</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Entity setup, Ofsted application submitted</td><td class="num">£0</td><td class="num">£18,833</td><td class="num neg">-£18,833</td><td class="num neg">-£18,833</td></tr>
+      <tr><td>2</td><td>Fit-out, recruitment begins</td><td class="num">£0</td><td class="num">£22,833</td><td class="num neg">-£22,833</td><td class="num neg">-£41,666</td></tr>
+      <tr><td>3</td><td>Recruitment, training, Ofsted visit prep</td><td class="num">£0</td><td class="num">£38,167</td><td class="num neg">-£38,167</td><td class="num neg">-£79,833</td></tr>
+      <tr><td>4</td><td>Staff onboarding, Ofsted inspection pending</td><td class="num">£0</td><td class="num">£58,167</td><td class="num neg">-£58,167</td><td class="num neg">-£138,000</td></tr>
+      <tr><td>5</td><td>Ofsted registration confirmed, referral pipeline</td><td class="num">£0</td><td class="num">£68,167</td><td class="num neg">-£68,167</td><td class="num neg">-£206,167</td></tr>
+      <tr><td>6</td><td>First placements (3 families at £3,500/wk)</td><td class="num">£45,500</td><td class="num">£68,167</td><td class="num neg">-£22,667</td><td class="num neg">-£228,834</td></tr>
+      <tr><td>7</td><td>Ramping (6 families)</td><td class="num">£91,000</td><td class="num">£68,167</td><td class="num pos">+£22,833</td><td class="num neg">-£206,001</td></tr>
+      <tr><td>8</td><td>Growing occupancy (8 families)</td><td class="num">£121,333</td><td class="num">£68,167</td><td class="num pos">+£53,166</td><td class="num neg">-£152,835</td></tr>
+      <tr><td>9</td><td>Target occupancy (10 families)</td><td class="num">£151,667</td><td class="num">£68,167</td><td class="num pos">+£83,500</td><td class="num neg">-£69,335</td></tr>
+      <tr><td>10</td><td>Steady state (11 families)</td><td class="num">£166,833</td><td class="num">£68,167</td><td class="num pos">+£98,666</td><td class="num pos">+£29,331</td></tr>
+      <tr><td>11</td><td>Steady state</td><td class="num">£166,833</td><td class="num">£68,167</td><td class="num pos">+£98,666</td><td class="num pos">+£127,997</td></tr>
+      <tr class="total-row"><td>12</td><td>Steady state</td><td class="num">£166,833</td><td class="num">£68,167</td><td class="num pos">+£98,666</td><td class="num pos">+£226,663</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Optimistic: Break-even at Month 10. Peak cash requirement: £228,834.</strong></p>
+
+  <h3>Scenario A — Realistic Timeline (First Placement Month 8)</h3>
+  <table>
+    <thead>
+      <tr><th>Month</th><th>Activity</th><th class="num">Income</th><th class="num">Costs</th><th class="num">Monthly P&L</th><th class="num">Cumulative</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1–2</td><td>Entity setup, legal, Ofsted pre-application</td><td class="num">£0</td><td class="num">£37,666</td><td class="num neg">-£37,666</td><td class="num neg">-£37,666</td></tr>
+      <tr><td>3–4</td><td>Ofsted application, fit-out</td><td class="num">£0</td><td class="num">£49,666</td><td class="num neg">-£49,666</td><td class="num neg">-£87,332</td></tr>
+      <tr><td>5–6</td><td>Ofsted assessment, recruitment</td><td class="num">£0</td><td class="num">£106,334</td><td class="num neg">-£106,334</td><td class="num neg">-£193,666</td></tr>
+      <tr><td>7</td><td>Registration confirmed, referral building</td><td class="num">£0</td><td class="num">£68,167</td><td class="num neg">-£68,167</td><td class="num neg">-£261,833</td></tr>
+      <tr><td>8</td><td>First placements (2 families)</td><td class="num">£30,333</td><td class="num">£68,167</td><td class="num neg">-£37,834</td><td class="num neg">-£299,667</td></tr>
+      <tr><td>9</td><td>Ramping (5 families)</td><td class="num">£75,833</td><td class="num">£68,167</td><td class="num pos">+£7,666</td><td class="num neg">-£292,001</td></tr>
+      <tr><td>10</td><td>Growing (7 families)</td><td class="num">£106,167</td><td class="num">£68,167</td><td class="num pos">+£38,000</td><td class="num neg">-£254,001</td></tr>
+      <tr><td>11</td><td>Growing (9 families)</td><td class="num">£136,500</td><td class="num">£68,167</td><td class="num pos">+£68,333</td><td class="num neg">-£185,668</td></tr>
+      <tr class="total-row"><td>12</td><td>Near target (10 families)</td><td class="num">£151,667</td><td class="num">£68,167</td><td class="num pos">+£83,500</td><td class="num neg">-£102,168</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Realistic: Break-even not reached until Month 13–14. Peak cash requirement: £299,667. The operator needs approximately £300,000 in working capital to survive the pre-revenue period.</strong></p>
+
+  <div class="callout callout-red">
+    <strong>Working Capital Warning</strong>
+    Under the realistic timeline, the operator must fund approximately £300,000 before the service reaches break-even. This is significantly higher than the V10 estimate because: (1) staffing costs are £52k/month not £28k/month; (2) Ofsted registration takes 3–6 months not 1–2 months; (3) referral pipeline building adds another 1–2 months. Any business plan that does not account for this working capital requirement is unrealistic.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 11. LEASE NEGOTIATION ═══════════════ -->
+<section id="s11" class="page-break">
+  <div class="section-num">Section 11</div>
+  <h2>Lease Negotiation Strategy</h2>
+
+  <h3>Developer Position Analysis</h3>
+  <p>The developer holds a completed, unoccupied building generating <strong>zero income</strong>. Key leverage factors:</p>
+  <ul>
+    <li><strong>Carrying costs:</strong> The developer is paying finance costs, insurance, and service charges on a vacant building</li>
+    <li><strong>Limited market:</strong> C2 use class restricts the tenant pool to care/residential operators only</li>
+    <li><strong>Time pressure:</strong> Every month unoccupied is a month of negative cash flow for the developer</li>
+    <li><strong>Conservation area:</strong> Limits alternative development options</li>
+    <li><strong>Market rates:</strong> Providers have been quoted £1,000–1,100/flat, but the developer's own quoted rate to the operator is £750/flat — suggesting willingness to negotiate</li>
+  </ul>
+
+  <h3>Recommended Negotiation Position</h3>
+  <table>
+    <thead><tr><th>Term</th><th>Opening Position</th><th>Target</th><th>Walk-Away</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Per-unit rent</strong></td><td>£500/flat/month</td><td>£600/flat/month</td><td>£750/flat/month</td></tr>
+      <tr><td><strong>Total monthly lease</strong></td><td>£7,000</td><td>£8,400</td><td>£10,500</td></tr>
+      <tr><td><strong>Rent-free period</strong></td><td>6 months</td><td>3 months</td><td>1 month</td></tr>
+      <tr><td><strong>Stepped rent</strong></td><td>50% M1-3, 75% M4-6, 100% M7+</td><td>50% M1-3, 100% M4+</td><td>N/A</td></tr>
+      <tr><td><strong>Break clause</strong></td><td>6 months</td><td>12 months</td><td>18 months</td></tr>
+      <tr><td><strong>Lease length</strong></td><td>5 years</td><td>5+5 years</td><td>10 years</td></tr>
+      <tr><td><strong>Rent review</strong></td><td>CPI-linked, capped at 3%</td><td>CPI-linked, capped at 4%</td><td>Open market</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Financial Impact of Lease Negotiation</h3>
+  <table>
+    <thead><tr><th>Lease Scenario</th><th class="num">Monthly Rent</th><th class="num">Annual Rent</th><th class="num">Saving vs £750</th><th class="num">Year 1 Impact (with rent-free)</th></tr></thead>
+    <tbody>
+      <tr class="loss-row"><td>Developer quoted (£750/flat)</td><td class="num">£10,500</td><td class="num">£126,000</td><td class="num">—</td><td class="num">£126,000</td></tr>
+      <tr><td>Target (£600/flat)</td><td class="num">£8,400</td><td class="num">£100,800</td><td class="num pos">£25,200</td><td class="num">£75,600*</td></tr>
+      <tr class="highlight-row"><td>Opening (£500/flat + 3mo free)</td><td class="num">£7,000</td><td class="num">£84,000</td><td class="num pos">£42,000</td><td class="num">£63,000*</td></tr>
+    </tbody>
+  </table>
+  <p class="source">*Year 1 impact assumes 3-month rent-free period included.</p>
+
+  <div class="callout callout-green">
+    <strong>Key Argument for Developer</strong>
+    "You currently receive £0/month. A lease at £600/flat gives you £8,400/month guaranteed income with a creditworthy operator committed to a 5-year term. That is £504,000 over 5 years. The alternative is continuing to receive nothing while carrying finance costs on a vacant building."
+  </div>
+</section>
+
+
+<!-- ═══════════════ 12. REGULATORY & ENTITY STRUCTURE ═══════════════ -->
+<section id="s12" class="page-break">
+  <div class="section-num">Section 12</div>
+  <h2>Regulatory Requirements &amp; Entity Structure</h2>
+
+  <h3>Regulatory Pathway by Scenario</h3>
+
+  <h4>Scenario A: Ofsted — Residential Family Centre</h4>
+  <ul>
+    <li><strong>Legal basis:</strong> Care Standards Act 2000, Residential Family Centres Regulations 2002</li>
+    <li><strong>Application route:</strong> Ofsted online portal → Fit Person interview → Premises inspection → Registration</li>
+    <li><strong>Key requirements:</strong> Registered Manager (Level 5 Diploma or equivalent), Statement of Purpose, Children's Guide, safeguarding policies, 24/7 staffing plan, assessment methodology</li>
+    <li><strong>Timeline:</strong> 3–6 months from application to registration</li>
+    <li><strong>Inspection cycle:</strong> Annual unannounced inspections once registered</li>
+    <li><strong>Critical success factor:</strong> The Registered Manager must demonstrate experience in residential family assessment. This is the single biggest bottleneck — Ofsted will reject applications where the RM lacks relevant experience.</li>
+  </ul>
+
+  <h4>Scenario B/C: CQC — Regulated Activity</h4>
+  <ul>
+    <li><strong>Legal basis:</strong> Health and Social Care Act 2008, CQC (Registration) Regulations 2009</li>
+    <li><strong>Trigger:</strong> Registration required only if the service provides "personal care" (help with washing, dressing, eating, medication)</li>
+    <li><strong>Application:</strong> CQC Provider Application → Registered Manager interview → Compliance assessment</li>
+    <li><strong>Timeline:</strong> 3–6 months, sometimes longer</li>
+    <li><strong>If no personal care:</strong> No CQC registration required. Support-only services (life skills, tenancy support, floating support) are unregulated.</li>
+  </ul>
+
+  <h3>Recommended Entity Structure</h3>
+
+  <div class="callout callout-gold">
+    <strong>CIC for Operator, Ltd for Services</strong>
+    The optimal structure separates the operating entity from any governance/compliance service provision.
+  </div>
+
+  <table>
+    <thead><tr><th>Entity</th><th>Type</th><th>Purpose</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Operating Entity</strong></td><td>Community Interest Company (CIC)</td><td>Holds Ofsted/CQC registration, employs staff, holds lease, receives commissioned income</td><td>CIC status enables access to exempt housing benefit rates, social value weighting in procurement, and grant funding. Required by many local authorities for commissioned services.</td></tr>
+      <tr><td><strong>Service/Compliance Provider</strong></td><td>Standard Ltd company</td><td>Provides governance, compliance, quality assurance, and management services to the CIC under a service agreement</td><td>Ltd structure has no asset lock or dividend cap (CIC has a 35% dividend cap). Allows commercial returns on consultancy/management services.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Why CIC for the Operator?</h4>
+  <ul>
+    <li><strong>Housing Benefit:</strong> CICs qualify as "non-profit" for exempt accommodation HB claims, unlocking rates above LHA</li>
+    <li><strong>Procurement:</strong> Sheffield City Council (and most LAs) apply social value weightings of 10–20% in procurement — CIC status provides inherent advantage</li>
+    <li><strong>Grant access:</strong> CICs can access social enterprise grants, Big Lottery Fund, and charitable trust funding unavailable to standard Ltd companies</li>
+    <li><strong>Commissioning credibility:</strong> Local authority commissioners strongly prefer non-profit delivery vehicles for residential care services</li>
+  </ul>
+
+  <h4>Why Not CIC for Everything?</h4>
+  <ul>
+    <li><strong>35% dividend cap:</strong> CIC regulations cap dividends at 35% of distributable profits — limiting investor returns</li>
+    <li><strong>Asset lock:</strong> CIC assets cannot be distributed to members; on dissolution, assets transfer to another CIC or charity</li>
+    <li><strong>Solution:</strong> The CIC operates the service. A separate Ltd provides management/compliance services under a commercial agreement, allowing uncapped commercial returns on the service element.</li>
+  </ul>
+</section>
+
+
+<!-- ═══════════════ 13. RISK ASSESSMENT ═══════════════ -->
+<section id="s13" class="page-break">
+  <div class="section-num">Section 13</div>
+  <h2>Risk Assessment</h2>
+
+  <h3>Risk Matrix</h3>
+  <table>
+    <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Rating</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Ofsted registration delayed beyond 6 months</strong></td><td>Medium</td><td>High</td><td><span class="badge badge-red">High</span></td><td>Submit pre-application enquiry before lease signing. Recruit Registered Manager as first hire. Allow 6-month buffer in cash flow.</td></tr>
+      <tr><td><strong>Registered Manager recruitment failure</strong></td><td>Medium</td><td>Critical</td><td><span class="badge badge-red">Critical</span></td><td>Without a qualified RM with residential family assessment experience, Ofsted will not register. Begin recruitment before lease signing. Budget for £50–55k to attract quality candidates.</td></tr>
+      <tr><td><strong>Low occupancy in first 6 months post-registration</strong></td><td>High</td><td>High</td><td><span class="badge badge-red">High</span></td><td>Build referral relationships with LA children's services teams before registration. Attend family justice board meetings. Budget for 6 months at 30% occupancy.</td></tr>
+      <tr><td><strong>Safeguarding incident</strong></td><td>Medium</td><td>Critical</td><td><span class="badge badge-red">Critical</span></td><td>Robust safeguarding policy, DBS checks for all staff, supervision frameworks, incident reporting systems. This is non-negotiable in M&B settings.</td></tr>
+      <tr><td><strong>Staff turnover above 30%</strong></td><td>High</td><td>Medium</td><td><span class="badge badge-gold">Medium</span></td><td>Care sector turnover averages 28-35%. Budget for continuous recruitment. Offer above-market salaries and benefits to reduce churn.</td></tr>
+      <tr><td><strong>Housing benefit rate reduction</strong></td><td>Low (pre-2027)</td><td>High</td><td><span class="badge badge-gold">Medium</span></td><td>Supported Housing Act enforcement delayed until 2027+. Lock in commissioned rates through framework agreements. Diversify income beyond HB.</td></tr>
+      <tr><td><strong>Planning condition non-compliance</strong></td><td>Low</td><td>Medium</td><td><span class="badge badge-green">Low</span></td><td>Commission planning consultant to audit all 27 conditions. Discharge any outstanding conditions before first admission.</td></tr>
+      <tr><td><strong>Local opposition / political risk</strong></td><td>Low</td><td>Low</td><td><span class="badge badge-green">Low</span></td><td>Zero objections during planning consultation. City centre location reduces residential neighbour impact. Proactive community engagement.</td></tr>
+      <tr><td><strong>Developer lease withdrawal</strong></td><td>Low</td><td>High</td><td><span class="badge badge-gold">Medium</span></td><td>Developer is motivated (zero income). Exchange heads of terms quickly. Seek exclusivity period during due diligence.</td></tr>
+      <tr><td><strong>Court referral volume decline</strong></td><td>Low</td><td>High</td><td><span class="badge badge-gold">Medium</span></td><td>National shortage of M&B places means demand exceeds supply. However, policy changes could shift courts toward foster care alternatives. Monitor policy direction.</td></tr>
+      <tr><td><strong>CQC/Ofsted adverse inspection</strong></td><td>Medium</td><td>Critical</td><td><span class="badge badge-red">High</span></td><td>Invest in governance and quality assurance infrastructure from day one. Conduct mock inspections before the first Ofsted visit. Ongoing compliance monitoring.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>M&B-Specific Risks</h3>
+  <div class="callout callout-red">
+    <strong>Safeguarding Complexity</strong>
+    Mother &amp; Baby and residential family assessment settings carry elevated safeguarding risks compared to standard supported accommodation. These include: allegations against staff, child protection concerns during assessment, parental mental health crises, domestic abuse disclosures, and substance misuse. The operator must have:
+    <ul style="margin-top:8px">
+      <li>Designated Safeguarding Lead with LSCB training</li>
+      <li>24/7 access to safeguarding advice</li>
+      <li>Relationship with Sheffield Children Safeguarding Partnership</li>
+      <li>Staff trained to Level 3 safeguarding minimum</li>
+      <li>Clear escalation protocols and Ofsted notification procedures</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ═══════════════ 14. COMPETITOR LANDSCAPE ═══════════════ -->
+<section id="s14" class="page-break">
+  <div class="section-num">Section 14</div>
+  <h2>Competitor Landscape</h2>
+
+  <h3>Residential Family Assessment Providers</h3>
+  <table>
+    <thead><tr><th>Provider</th><th>Location</th><th>Ofsted Rating</th><th>Capacity</th><th>Model</th><th>Key Features</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Majestic Family Services</strong></td><td>Kent</td><td><span class="badge badge-green">Outstanding</span></td><td>2 units</td><td>12-week residential assessment</td><td>1:1 staffing, qualified social workers on staff, court report preparation, family therapy</td></tr>
+      <tr><td><strong>Mikare Family Services</strong></td><td>Multi-site</td><td><span class="badge badge-green">Good</span></td><td>Multiple</td><td>Residential assessment &amp; parenting programmes</td><td>25+ years experience, court-directed and voluntary placements</td></tr>
+      <tr><td><strong>Treetops (Staffordshire)</strong></td><td>Midlands</td><td><span class="badge badge-blue">Good</span></td><td>6 units</td><td>Residential M&B assessment</td><td>Closest comparable in North/Midlands region</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Market Gap Analysis</h3>
+  <div class="callout callout-green">
+    <strong>Supply-Demand Imbalance</strong>
+    There is a documented national shortage of residential family assessment places. Most established providers are concentrated in the South East (Kent, London, Surrey). Yorkshire and the North East have very limited provision, creating a significant geographical gap. Local authorities in Sheffield, Rotherham, Barnsley, Doncaster, and across South Yorkshire regularly report difficulty sourcing residential M&amp;B assessment placements, often placing families hundreds of miles from their home authority at additional cost.
+  </div>
+
+  <ul>
+    <li><strong>Geographic advantage:</strong> No Outstanding-rated residential family assessment centre in South Yorkshire</li>
+    <li><strong>Cost advantage for LAs:</strong> Local provision eliminates inter-authority transport and contact visit costs</li>
+    <li><strong>Court preference:</strong> Family courts prefer placements close to the home authority for ease of professional visits, contact arrangements, and court attendance</li>
+    <li><strong>Price comparison:</strong> Residential M&B assessment costs £3,000–5,000/week. Foster care alternative costs ~£750/week. Courts direct residential assessment when risk level requires 24/7 observation — this demand is not price-elastic.</li>
+  </ul>
+
+  <h3>Sheffield Exempt Accommodation — Top Providers</h3>
+  <table>
+    <thead><tr><th>Provider</th><th class="num">Annual HB Income</th><th class="num">5-Year Total</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Greenbridge</td><td class="num">£9M+</td><td class="num">£25M+</td><td>Largest single provider — significant market concentration</td></tr>
+      <tr><td>Other top 10 providers</td><td class="num">£1–4M each</td><td class="num">Various</td><td>81 total providers across Sheffield</td></tr>
+    </tbody>
+  </table>
+  <p class="source">Sheffield City Council Housing Benefit data, FOI responses 2024/25.</p>
+</section>
+
+
+<!-- ═══════════════ 15. COST OF NON-COMPLIANCE ═══════════════ -->
+<section id="s15" class="page-break">
+  <div class="section-num">Section 15</div>
+  <h2>Cost of Non-Compliance</h2>
+
+  <p>Operating a residential care service without adequate governance and compliance infrastructure exposes the operator to significant financial, legal, and reputational risk. This section outlines the consequences of non-compliance — not as a sales pitch for any particular provider, but as a realistic assessment of the regulatory environment.</p>
+
+  <h3>Regulatory Enforcement Powers</h3>
+  <table>
+    <thead><tr><th>Regulator</th><th>Power</th><th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td>Ofsted</td><td>Suspension of registration</td><td>All placements must be removed. Zero income. Reputational damage makes re-registration extremely difficult.</td></tr>
+      <tr><td>Ofsted</td><td>Cancellation of registration</td><td>Permanent closure. Loss of all investment.</td></tr>
+      <tr><td>Ofsted</td><td>Inadequate rating</td><td>Commissioning freeze by LAs. No new referrals until re-inspection (6–12 months). Potential loss of existing placements.</td></tr>
+      <tr><td>CQC</td><td>Warning notice / compliance action</td><td>Public record. Commissioning freeze. Mandatory action plan.</td></tr>
+      <tr><td>CQC</td><td>Prosecution</td><td>Criminal offence to operate without registration if providing regulated activities. Unlimited fines.</td></tr>
+      <tr><td>Local Authority</td><td>Housing benefit suspension</td><td>Immediate income cessation. Can be triggered by quality concerns or safeguarding failures.</td></tr>
+      <tr><td>HSE</td><td>Improvement/prohibition notice</td><td>Building closure if health and safety standards not met.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Real-World Examples (Sector-Wide)</h3>
+  <ul>
+    <li><strong>Exempt accommodation enforcement:</strong> Multiple providers nationally have had HB claims suspended following quality audits, with some owing six-figure repayment demands</li>
+    <li><strong>Ofsted closures:</strong> Residential family centres rated Inadequate face automatic commissioning freezes — no LA will place a family in an Inadequate-rated centre</li>
+    <li><strong>Prosecution:</strong> Operating a children's home or residential family centre without Ofsted registration is a criminal offence under the Care Standards Act 2000 (s.11), carrying an unlimited fine and/or imprisonment</li>
+  </ul>
+
+  <h3>What "Good Governance" Looks Like</h3>
+  <p>Any operator of this building — regardless of which scenario is pursued — needs the following compliance infrastructure as a minimum:</p>
+  <ul>
+    <li>Registered Manager with relevant qualifications and DBS</li>
+    <li>Statement of Purpose aligned with Ofsted/CQC requirements</li>
+    <li>Comprehensive policy suite (safeguarding, complaints, medication, fire safety, lone working, whistleblowing, etc.)</li>
+    <li>Staff supervision and appraisal framework</li>
+    <li>Training matrix with CPD tracking</li>
+    <li>Incident reporting and notification systems</li>
+    <li>Quality assurance and audit programme</li>
+    <li>Complaints procedure with independent escalation route</li>
+    <li>Data protection (GDPR) compliance framework</li>
+    <li>Business continuity and contingency planning</li>
+  </ul>
+
+  <div class="callout callout-gold">
+    <strong>Investment, Not Optional Extra</strong>
+    Governance and compliance infrastructure is a core operating cost, not an add-on. Budget £2,000–4,000/month for ongoing quality assurance, audit, and compliance management. This cost is already factored into the scenario models above.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 16. IMPLEMENTATION TIMELINE ═══════════════ -->
+<section id="s16" class="page-break">
+  <div class="section-num">Section 16</div>
+  <h2>Implementation Timeline</h2>
+
+  <h3>Optimistic Timeline — First Income at Month 6</h3>
+  <div class="timeline">
+    <div class="tl-item"><h4>Month 1 — Entity &amp; Legal</h4><p>Incorporate CIC. Appoint directors. Instruct solicitors on lease. Begin Registered Manager recruitment. Open business bank account.</p></div>
+    <div class="tl-item"><h4>Month 2 — Heads of Terms &amp; Ofsted</h4><p>Exchange heads of terms with developer. Submit Ofsted pre-application enquiry. RM recruitment ongoing. Commission policy suite development.</p></div>
+    <div class="tl-item"><h4>Month 3 — Lease &amp; Application</h4><p>Complete lease. Submit Ofsted registration application. RM appointed. Begin fit-out planning. DBS checks for directors.</p></div>
+    <div class="tl-item"><h4>Month 4 — Recruitment &amp; Fit-Out</h4><p>Staff recruitment begins. Minor fit-out works. Policies finalised. Staff training programme designed. LA engagement begins.</p></div>
+    <div class="tl-item"><h4>Month 5 — Ofsted Assessment</h4><p>Ofsted fit person interview. Premises inspection. Staff onboarding and training. Referral pipeline conversations with LAs.</p></div>
+    <div class="tl-item"><h4>Month 6 — Registration &amp; First Placements</h4><p>Ofsted registration confirmed. First referrals accepted. Admission of 2–3 families. Operational go-live.</p></div>
+    <div class="tl-item"><h4>Months 7–10 — Ramp-Up</h4><p>Occupancy builds to 70–80%. Quality assurance systems tested. First Ofsted monitoring visit. Break-even targeted by Month 10.</p></div>
+  </div>
+
+  <h3>Realistic / Conservative Timeline — First Income at Month 8</h3>
+  <div class="timeline">
+    <div class="tl-item"><h4>Months 1–2 — Setup &amp; Planning</h4><p>Entity incorporation. Legal due diligence. Lease negotiation. RM recruitment (may take 8–12 weeks to find suitable candidate).</p></div>
+    <div class="tl-item"><h4>Months 3–4 — Ofsted Application</h4><p>Submit application. Ofsted processing time (4–8 weeks before fit person interview is scheduled). Fit-out works commence.</p></div>
+    <div class="tl-item"><h4>Months 5–6 — Assessment Period</h4><p>Ofsted fit person interview. Additional information requests (common). Premises inspection. Staff recruitment and DBS clearance.</p></div>
+    <div class="tl-item"><h4>Month 7 — Registration</h4><p>Ofsted registration confirmed. Final staff training. Referral pipeline activation. Pre-admission assessments.</p></div>
+    <div class="tl-item"><h4>Month 8 — Soft Launch</h4><p>First 1–2 families admitted. Operational systems tested in practice. Learning period.</p></div>
+    <div class="tl-item"><h4>Months 9–12 — Growth</h4><p>Gradual occupancy increase. Target 70% by Month 12. First Ofsted monitoring visit. System refinement.</p></div>
+    <div class="tl-item"><h4>Months 13–14 — Break-Even</h4><p>At 70–80% occupancy with mid-range rates, the service reaches break-even. Cumulative deficit repaid from Month 14 surplus onwards.</p></div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Critical Path Item: Registered Manager</strong>
+    In both timelines, the single biggest variable is Registered Manager recruitment. Ofsted will not process a registration application without a named RM who meets their fit person criteria. If RM recruitment takes longer than expected, every subsequent milestone shifts. Recommendation: begin RM recruitment before signing the lease.
+  </div>
+</section>
+
+
+<!-- ═══════════════ 17. RECOMMENDATION ═══════════════ -->
+<section id="s17" class="page-break">
+  <div class="section-num">Section 17</div>
+  <h2>Recommendation &amp; Next Steps</h2>
+
+  <h3>Summary of Findings</h3>
+  <table>
+    <thead><tr><th>Criterion</th><th>Scenario A</th><th>Scenario B</th><th>Scenario C</th><th>Scenario D</th></tr></thead>
+    <tbody>
+      <tr><td>Financial viability</td><td class="pos">Strong</td><td>Marginal–Good</td><td>Conditional</td><td class="neg">Unviable</td></tr>
+      <tr><td>Regulatory complexity</td><td>High (Ofsted)</td><td>Medium (CQC)</td><td>Medium (CQC)</td><td>Low</td></tr>
+      <tr><td>Time to first income</td><td>6–8 months</td><td>3–6 months</td><td>3–6 months</td><td>1–2 months</td></tr>
+      <tr><td>Working capital required</td><td>£230k–300k</td><td>£100k–150k</td><td>£100k–150k</td><td>£30k–50k</td></tr>
+      <tr><td>Staffing complexity</td><td>High (17–20 FTE)</td><td>Medium (9–10 FTE)</td><td>Medium (11–12 FTE)</td><td>Low (3 FTE)</td></tr>
+      <tr><td>Market demand</td><td class="pos">National shortage</td><td>Strong locally</td><td>Strong locally</td><td>Saturated</td></tr>
+      <tr><td>Alignment with C2 consent</td><td class="pos">Exact match</td><td>Good</td><td>Good</td><td>Weak</td></tr>
+      <tr><td>Long-term defensibility</td><td class="pos">High (Ofsted barrier)</td><td>Medium</td><td>Medium</td><td class="neg">Low (no moat)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Recommendation</h3>
+  <div class="callout callout-green">
+    <strong>Primary: Scenario A (Residential Family Assessment Centre)</strong>
+    The C2 consent was granted specifically for a "family support unit." The national shortage of residential family assessment places, combined with the geographic gap in South Yorkshire, creates a genuine market opportunity. The financial returns are significantly higher than any other scenario. However, the operator must be realistic about the regulatory timeline (6–8 months to first income), the working capital requirement (£230k–300k), and the critical dependency on recruiting a qualified Registered Manager.
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Fallback: Scenario B (M&B Supported Living)</strong>
+    If Scenario A proves unachievable (e.g., RM recruitment fails, Ofsted registration is delayed beyond 9 months), Scenario B provides a viable alternative with lower regulatory barriers, lower staffing costs, and faster time to income. It can also serve as a stepping stone — establish the service as M&B supported living, build the track record, then apply for Ofsted registration to upgrade to Scenario A.
+  </div>
+
+  <h3>Immediate Next Steps</h3>
+  <table>
+    <thead><tr><th>#</th><th>Action</th><th>Owner</th><th>Deadline</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Submit Enhanced Care Framework market engagement response</td><td>Operator</td><td>26 March 2026</td><td><span class="badge badge-red">Urgent</span></td></tr>
+      <tr><td>2</td><td>Begin Registered Manager recruitment</td><td>Operator</td><td>Immediate</td><td><span class="badge badge-red">Critical</span></td></tr>
+      <tr><td>3</td><td>Instruct solicitor — lease review and negotiation</td><td>Operator</td><td>Within 2 weeks</td><td><span class="badge badge-gold">High</span></td></tr>
+      <tr><td>4</td><td>Incorporate CIC (operator entity)</td><td>Operator</td><td>Within 4 weeks</td><td><span class="badge badge-gold">High</span></td></tr>
+      <tr><td>5</td><td>Submit Ofsted pre-application enquiry</td><td>Operator / RM</td><td>Within 6 weeks</td><td><span class="badge badge-gold">High</span></td></tr>
+      <tr><td>6</td><td>Obtain planning condition discharge audit</td><td>Planning consultant</td><td>Within 4 weeks</td><td><span class="badge badge-blue">Medium</span></td></tr>
+      <tr><td>7</td><td>Commission policy suite development</td><td>Governance provider</td><td>Within 8 weeks</td><td><span class="badge badge-blue">Medium</span></td></tr>
+      <tr><td>8</td><td>Prepare for £15M alliance contract tender (June 2026 notice)</td><td>Operator</td><td>May 2026</td><td><span class="badge badge-blue">Medium</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ═══════════════ 18. APPENDIX ═══════════════ -->
+<section id="s18" class="page-break">
+  <div class="section-num">Section 18</div>
+  <h2>Appendix: Key Data Sources</h2>
+
+  <table>
+    <thead><tr><th>Data Point</th><th>Source</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>Sheffield exempt accommodation: £42M/year, 3,995 claims, 81 providers</td><td>Sheffield City Council Housing Benefit data (FOI)</td><td>2024/25</td></tr>
+      <tr><td>Sheffield exempt accommodation: £135M cumulative 5-year spend</td><td>Sheffield City Council Housing Benefit data (FOI)</td><td>2020–2025</td></tr>
+      <tr><td>Greenbridge: £9M+/year, £25M+ cumulative</td><td>Sheffield City Council Housing Benefit data (FOI)</td><td>2024/25</td></tr>
+      <tr><td>Average exempt claim: £287/week</td><td>Sheffield City Council Housing Benefit data (FOI)</td><td>2024/25</td></tr>
+      <tr><td>Sheffield LHA: 1-bed £575/month, SAR £350/month</td><td>Valuation Office Agency — Sheffield BRMA</td><td>April 2025</td></tr>
+      <tr><td>Residential M&B assessment rates: £3,000–5,000/week</td><td>Simply Fostering market data; LGA analysis</td><td>2024/25</td></tr>
+      <tr><td>12-week assessment cost: up to £60,000 (£5,000/wk)</td><td>Simply Fostering</td><td>2024/25</td></tr>
+      <tr><td>Foster care alternative: ~£750/week</td><td>LGA fostering allowances data</td><td>2024/25</td></tr>
+      <tr><td>Supported Housing Act: Royal Assent August 2023</td><td>UK Parliament — legislation.gov.uk</td><td>August 2023</td></tr>
+      <tr><td>Enforcement "will not come into force before 2027"</td><td>Homeless Link</td><td>2025/26</td></tr>
+      <tr><td>House of Commons Library update</td><td>House of Commons Library — Supported Housing briefing</td><td>January 2026</td></tr>
+      <tr><td>LGA consultation response: multi-year funding needed</td><td>LGA formal response to DLUHC consultation</td><td>2025</td></tr>
+      <tr><td>Sheffield Enhanced Care Framework: 8-year contract</td><td>Sheffield City Council procurement portal</td><td>2025/26</td></tr>
+      <tr><td>Market engagement deadline: 26 March 2026</td><td>Sheffield City Council procurement portal</td><td>2026</td></tr>
+      <tr><td>Sheffield £15M tender: June 2026 notice, April 2027 start</td><td>Sheffield City Council procurement portal</td><td>2026</td></tr>
+      <tr><td>Planning ref 24/03723/CHU: Granted 28 March 2025</td><td>Sheffield City Council planning portal</td><td>March 2025</td></tr>
+      <tr><td>Zero objections during consultation</td><td>Sheffield City Council planning portal</td><td>March 2025</td></tr>
+      <tr><td>Original build ref 20/04327/FUL: Granted 18 May 2022</td><td>Sheffield City Council planning portal</td><td>May 2022</td></tr>
+      <tr><td>Furnace Hill Conservation Area designation</td><td>Sheffield City Council heritage records</td><td>Ongoing</td></tr>
+      <tr><td>Majestic Family Services: Outstanding Ofsted</td><td>Ofsted inspection reports</td><td>Latest inspection</td></tr>
+      <tr><td>Mikare Family Services: 25+ years operation</td><td>Company records / Ofsted</td><td>Current</td></tr>
+      <tr><td>Staffing costs: £52,334/month (full model)</td><td>Operator staffing analysis (Raf figures)</td><td>March 2026</td></tr>
+      <tr><td>Lease: £750/flat (developer quoted rate)</td><td>Operator meeting with developer (Raf)</td><td>March 2026</td></tr>
+      <tr><td>Providers quoted £1,000–1,100/flat</td><td>Operator market research (Raf)</td><td>March 2026</td></tr>
+      <tr><td>Ofsted registration timeline: 3–6 months</td><td>Ofsted published guidance — registration process</td><td>Current</td></tr>
+      <tr><td>Care Standards Act 2000, s.11 — offence to operate unregistered</td><td>UK legislation</td><td>Current</td></tr>
+      <tr><td>Independent Review of Children's Social Care</td><td>Josh MacAlister / DfE</td><td>2022</td></tr>
+      <tr><td>Yorkshire care sector salary benchmarks</td><td>Indeed, Reed, National Care Forum data</td><td>2025/26</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-gold">
+    <strong>Data Validation Notice</strong>
+    All figures in this report have been sourced from publicly available data, operator-provided information, and market comparables. Where exact figures were unavailable, reasonable estimates have been used and are clearly marked as assumptions. All financial projections should be independently validated before any investment or operational decision.
+  </div>
+</section>
+
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="report-footer">
+  <p><span class="brand">Prepared by Pillar Governance Group</span></p>
+  <p>Version 11 — 16 March 2026 — Commercial in Confidence</p>
+  <p style="margin-top:8px;font-size:11px">This document contains financial projections that are indicative models only. Independent professional advice should be sought before making any investment or operational decisions.</p>
+</div>
+
+</div><!-- /.report -->
+</body>
+</html>
