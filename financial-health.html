@@ -758,92 +758,147 @@ body {
   </div>
 </div>
 
-<!-- ════════════════════════ 8. PER-PROPERTY P&L ════════════════════════ -->
+<!-- ════════════════════════ 8. PER-PROPERTY P&L COMPARISON ════════════════════════ -->
 <div class="col-12 card">
   <div class="card-header">
-    <div class="card-title"><span class="icon">&#128203;</span> Per-Property P&amp;L (Monthly)</div>
+    <div class="card-title"><span class="icon">&#128203;</span> Per-Property P&amp;L Comparison</div>
+    <span class="card-badge badge-amber">2 Loss-Making</span>
   </div>
+
+  <!-- Summary Bar -->
+  <div class="kpi-row" style="margin-bottom: 1.25rem;">
+    <div class="kpi-item">
+      <div class="kpi-value sm">&pound;124,796</div>
+      <div class="kpi-label">Total Monthly Revenue</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm">&pound;120,525</div>
+      <div class="kpi-label">Total Monthly Costs</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm positive">&pound;4,271</div>
+      <div class="kpi-label">Total Net Profit</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm positive">4</div>
+      <div class="kpi-label">Profitable Properties</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value sm negative">2</div>
+      <div class="kpi-label">Loss-Making Properties</div>
+    </div>
+  </div>
+
+  <!-- Property Comparison Table -->
   <div style="overflow-x: auto;">
     <table class="data-table">
       <thead>
         <tr>
           <th>Property</th>
+          <th class="num">Beds</th>
+          <th class="num">Occupancy</th>
           <th class="num">Revenue</th>
-          <th class="num">Staff Cost</th>
-          <th class="num">Rent</th>
-          <th class="num">Other</th>
-          <th class="num">Profit</th>
+          <th class="num">Staff Costs</th>
+          <th class="num">Rent/Lease</th>
+          <th class="num">Other Costs</th>
+          <th class="num">Net Profit</th>
           <th class="num">Margin</th>
+          <th>RAG</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>114 Southcote Lane</td>
+          <td class="num">5</td>
+          <td class="num">90%</td>
           <td class="num">&pound;28,500</td>
           <td class="num">&pound;21,000</td>
           <td class="num">&pound;2,800</td>
           <td class="num">&pound;1,900</td>
           <td class="num profit-pos">&pound;2,800</td>
           <td class="num profit-pos">9.8%</td>
+          <td><span class="status-dot green"></span>Green</td>
         </tr>
         <tr>
           <td>146 Southcote Lane</td>
-          <td class="num">&pound;24,200</td>
-          <td class="num">&pound;18,500</td>
-          <td class="num">&pound;2,600</td>
-          <td class="num">&pound;1,600</td>
-          <td class="num profit-pos">&pound;1,500</td>
-          <td class="num profit-pos">6.2%</td>
+          <td class="num">3</td>
+          <td class="num">83%</td>
+          <td class="num">&pound;14,200</td>
+          <td class="num">&pound;10,800</td>
+          <td class="num">&pound;2,100</td>
+          <td class="num">&pound;1,150</td>
+          <td class="num profit-pos">&pound;150</td>
+          <td class="num" style="color:var(--orange)">1.1%</td>
+          <td><span class="status-dot amber"></span>Amber</td>
         </tr>
         <tr>
           <td>56 Hamilton Road</td>
+          <td class="num">4</td>
+          <td class="num">80%</td>
           <td class="num">&pound;22,800</td>
           <td class="num">&pound;17,200</td>
           <td class="num">&pound;2,400</td>
           <td class="num">&pound;1,500</td>
           <td class="num profit-pos">&pound;1,700</td>
           <td class="num profit-pos">7.5%</td>
+          <td><span class="status-dot green"></span>Green</td>
         </tr>
         <tr>
           <td>Basingstoke Road</td>
+          <td class="num">5</td>
+          <td class="num">75%</td>
           <td class="num">&pound;19,600</td>
           <td class="num">&pound;15,800</td>
           <td class="num">&pound;2,700</td>
-          <td class="num">&pound;1,400</td>
-          <td class="num profit-neg">-&pound;300</td>
-          <td class="num profit-neg">-1.5%</td>
+          <td class="num">&pound;2,400</td>
+          <td class="num profit-neg">-&pound;1,300</td>
+          <td class="num profit-neg">-6.6%</td>
+          <td><span class="status-dot red"></span>Red</td>
         </tr>
         <tr>
           <td>Fairlawn Green</td>
-          <td class="num">&pound;18,400</td>
-          <td class="num">&pound;13,500</td>
+          <td class="num">5</td>
+          <td class="num">100%</td>
+          <td class="num">&pound;26,400</td>
+          <td class="num">&pound;19,500</td>
           <td class="num">&pound;2,600</td>
-          <td class="num">&pound;1,200</td>
-          <td class="num profit-pos">&pound;1,100</td>
-          <td class="num profit-pos">6.0%</td>
+          <td class="num">&pound;1,800</td>
+          <td class="num profit-pos">&pound;2,500</td>
+          <td class="num profit-pos">9.5%</td>
+          <td><span class="status-dot green"></span>Green</td>
         </tr>
         <tr>
-          <td>6 Pentland Close</td>
+          <td>Pentland Close <span class="card-badge badge-red" style="font-size:0.6rem; padding:1px 6px; vertical-align:middle;">RI</span></td>
+          <td class="num">4</td>
+          <td class="num">67%</td>
           <td class="num">&pound;13,296</td>
           <td class="num">&pound;9,298</td>
           <td class="num">&pound;2,452</td>
-          <td class="num">&pound;1,125</td>
-          <td class="num profit-pos">&pound;421</td>
-          <td class="num profit-pos">3.2%</td>
+          <td class="num">&pound;3,129</td>
+          <td class="num profit-neg">-&pound;1,583</td>
+          <td class="num profit-neg">-11.9%</td>
+          <td><span class="status-dot red"></span>Red</td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="summary-row">
           <td><strong>Total / Average</strong></td>
-          <td class="num"><strong>&pound;126,796</strong></td>
-          <td class="num"><strong>&pound;95,298</strong></td>
-          <td class="num"><strong>&pound;15,552</strong></td>
-          <td class="num"><strong>&pound;8,725</strong></td>
-          <td class="num" style="color:var(--green)"><strong>&pound;7,221</strong></td>
-          <td class="num" style="color:var(--green)"><strong>5.7%</strong></td>
+          <td class="num"><strong>26</strong></td>
+          <td class="num"><strong>82%</strong></td>
+          <td class="num"><strong>&pound;124,796</strong></td>
+          <td class="num"><strong>&pound;93,598</strong></td>
+          <td class="num"><strong>&pound;15,052</strong></td>
+          <td class="num"><strong>&pound;11,879</strong></td>
+          <td class="num" style="color:var(--green)"><strong>&pound;4,271</strong></td>
+          <td class="num" style="color:var(--green)"><strong>3.4%</strong></td>
+          <td></td>
         </tr>
       </tfoot>
     </table>
+  </div>
+
+  <div class="info-box">
+    <strong>RAG Status:</strong> Green = margin above 5%, Amber = margin 0&ndash;5% (break-even risk), Red = negative margin (loss-making). Properties flagged RI (Requires Improvement) by CQC are highlighted. Basingstoke Road and Pentland Close require urgent cost review or occupancy improvement to return to profitability.
   </div>
 </div>
 
