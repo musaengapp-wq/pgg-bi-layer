@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orchard Studios — Opportunity Review V12 | Pillar Governance Group</title>
+<title>Orchard Studios — Opportunity Review V12 | Beacon Governance Group</title>
 <style>
 /* ── Reset & Variables ── */
 *{margin:0;padding:0;box-sizing:border-box}
@@ -20,6 +20,10 @@
   .page-break{page-break-before:always}
   section{break-inside:avoid}
   .toc a{color:var(--navy)!important}
+  div, section, table, .card, .kpi-row {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
 body{font-family:'Segoe UI',Roboto,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15px}
 a{color:var(--navy);text-decoration:none}
@@ -39,7 +43,7 @@ a{color:var(--navy);text-decoration:none}
 .cover-meta div span{color:rgba(255,255,255,.85);font-size:15px}
 
 /* ── Disclaimer ── */
-.disclaimer{background:#fff3cd;border:1px solid #f0dca0;border-radius:10px;padding:18px 24px;margin-bottom:28px;font-size:13px;color:#856404;line-height:1.55}
+.disclaimer{background:#fff3cd;border:1px solid #f0dca0;border-radius:12px;padding:18px 24px;margin-bottom:28px;font-size:13px;color:#856404;line-height:1.55}
 .disclaimer strong{color:#6d4c00}
 
 /* ── TOC ── */
@@ -64,12 +68,12 @@ li{margin-bottom:5px}
 /* ── Tables ── */
 table{width:100%;border-collapse:collapse;margin:16px 0 20px;font-size:13.5px}
 thead th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
-thead th:first-child{border-radius:8px 0 0 0}
-thead th:last-child{border-radius:0 8px 0 0}
+thead th:first-child{border-radius:12px 0 0 0}
+thead th:last-child{border-radius:0 12px 0 0}
 tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
 tbody tr:hover td{background:rgba(26,26,62,.02)}
-tbody tr:last-child td:first-child{border-radius:0 0 0 8px}
-tbody tr:last-child td:last-child{border-radius:0 0 8px 0}
+tbody tr:last-child td:first-child{border-radius:0 0 0 12px}
+tbody tr:last-child td:last-child{border-radius:0 0 12px 0}
 .total-row td{font-weight:700;background:rgba(201,168,76,.06);border-top:2px solid var(--gold)}
 .highlight-row td{background:rgba(39,174,96,.05)}
 .loss-row td{background:rgba(192,57,43,.05);color:var(--red)}
@@ -78,7 +82,7 @@ td.pos{color:var(--green);font-weight:600}
 td.neg{color:var(--red);font-weight:600}
 
 /* ── Callouts ── */
-.callout{border-radius:10px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.55}
+.callout{border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.55}
 .callout-gold{background:rgba(201,168,76,.08);border-left:4px solid var(--gold);color:#5a4a1e}
 .callout-blue{background:rgba(41,128,185,.06);border-left:4px solid var(--blue);color:#1a4a6e}
 .callout-red{background:rgba(192,57,43,.06);border-left:4px solid var(--red);color:#6e1a1a}
@@ -94,7 +98,7 @@ td.neg{color:var(--red);font-weight:600}
 
 /* ── KPI cards ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin:18px 0 24px}
-.kpi{text-align:center;background:var(--bg);border-radius:10px;padding:20px 16px;border:1px solid var(--border)}
+.kpi{text-align:center;background:var(--bg);border-radius:12px;padding:20px 16px;border:1px solid var(--border)}
 .kpi-value{font-size:30px;font-weight:800;color:var(--navy)}
 .kpi-label{font-size:12px;color:var(--text-light);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
 .kpi-value.gold{color:var(--gold)}
@@ -131,19 +135,15 @@ td.neg{color:var(--red);font-weight:600}
 
 /* ── Comparison boxes ── */
 .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
-.compare-box{border-radius:10px;padding:20px;border:1px solid var(--border)}
+.compare-box{border-radius:12px;padding:20px;border:1px solid var(--border)}
 .compare-box h4{margin:0 0 10px;font-size:15px}
 .compare-box.recommended{border-color:var(--gold);background:rgba(201,168,76,.03)}
-
-@media print {
-  div, section, table, .card, .kpi-row, .warning-box {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-}
 </style>
 </head>
-<body>
+<body><div style="background: #fff3cd; border: 1px solid #c9a84c; border-radius: 8px; padding: 20px; margin: 20px 0; font-size: 14px; color: #1a1a3e;">
+<strong>⚠️ DRAFT — AWAITING VERIFIED FIGURES</strong><br><br>
+Financial projections in this report are based on publicly available data and indicative figures provided during initial discussions. Key assumptions — including lease terms, placement rates, staffing levels, and council commissioning rates — are awaiting confirmation from the developer and local authority sources. All figures should be independently verified before any financial commitment is made. This report will be updated once confirmed figures are received.
+</div>
 <div class="report">
 
 <!-- ═══════════════ COVER ═══════════════ -->
@@ -1156,13 +1156,21 @@ td.neg{color:var(--red);font-weight:600}
 </section>
 
 
+<!-- ═══════════════ 7-UNIT NOTE ═══════════════ -->
+<div style="border-top: 1px solid #dfe2e8; padding-top: 16px; margin: 24px 0 28px; font-size: 12px; color: #6b7080; line-height: 1.55;">
+  Note: Of the 14 studio units, 7 are configured as residential family accommodation and 7 as operational/support rooms (CCTV, staff quarters, training, sensory, consultation, multi-purpose). Revenue projections in this report are based on 14 lettable units. Corrected projections based on 7 revenue-generating family units will be provided in the next revision. All financial figures should be independently verified.
+</div>
+
 <!-- ═══════════════ FOOTER ═══════════════ -->
 <div class="report-footer">
   <p><span class="brand">Prepared by Beacon Governance Group</span></p>
-  <p>Version 11 — 16 March 2026 — Commercial in Confidence</p>
+  <p>Version 12 — 16 March 2026 — Commercial in Confidence</p>
   <p style="margin-top:8px;font-size:11px">This document contains financial projections that are indicative models only. Independent professional advice should be sought before making any investment or operational decisions.</p>
 </div>
 
 </div><!-- /.report -->
-</body>
+<div style="background: #fff3cd; border: 1px solid #c9a84c; border-radius: 8px; padding: 20px; margin: 20px 0; font-size: 14px; color: #1a1a3e;">
+<strong>⚠️ DRAFT — AWAITING VERIFIED FIGURES</strong><br><br>
+Financial projections in this report are based on publicly available data and indicative figures provided during initial discussions. Key assumptions — including lease terms, placement rates, staffing levels, and council commissioning rates — are awaiting confirmation from the developer and local authority sources. All figures should be independently verified before any financial commitment is made. This report will be updated once confirmed figures are received.
+</div></body>
 </html>
