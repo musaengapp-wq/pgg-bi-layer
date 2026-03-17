@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orchard Studios — Opportunity Review V11 | Beacon Governance Group</title>
+<title>Orchard Studios — Opportunity Review V12 | Beacon Governance Group</title>
 <style>
 /* ── Reset & Variables ── */
 *{margin:0;padding:0;box-sizing:border-box}
@@ -134,6 +134,22 @@ td.neg{color:var(--red);font-weight:600}
 .compare-box{border-radius:10px;padding:20px;border:1px solid var(--border)}
 .compare-box h4{margin:0 0 10px;font-size:15px}
 .compare-box.recommended{border-color:var(--gold);background:rgba(201,168,76,.03)}
+
+@media print {
+  .disclaimer, .warning, .note, div[style*='background: #fff3cd'], div[style*='background:#fff3cd'] {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  section, .card, table, .kpi-row {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+/* Also for Chrome PDF */
+div, section, table, .card {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
 </style>
 </head>
 <body><div style="background: #fff3cd; border: 1px solid #c9a84c; border-radius: 8px; padding: 20px; margin: 20px 0; font-size: 14px; color: #1a1a3e;">
@@ -148,7 +164,7 @@ Financial projections in this report are based on publicly available data and in
   <h1>Orchard Studios<br><span>Independent Opportunity Analysis</span></h1>
   <p class="subtitle">14-unit C2 licensed residential development, Orchard Lane, Sheffield S1. Multi-scenario financial analysis with market context and regulatory pathway.</p>
   <div class="cover-meta">
-    <div><strong>Version</strong><span>V11 — Revised</span></div>
+    <div><strong>Version</strong><span>V12 — Corrected</span></div>
     <div><strong>Date</strong><span>16 March 2026</span></div>
     <div><strong>Classification</strong><span>Commercial in Confidence</span></div>
     <div><strong>Asset Type</strong><span>C2 Residential — 14 Studios</span></div>
